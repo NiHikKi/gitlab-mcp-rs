@@ -202,9 +202,9 @@ mod tests {
 
     #[test]
     fn normalizes_url_that_already_has_api_suffix() {
-        let (rest, gql) = normalize_urls("https://git.example.kz/api/v4/").unwrap();
-        assert_eq!(rest, "https://git.example.kz/api/v4");
-        assert_eq!(gql, "https://git.example.kz/api/graphql");
+        let (rest, gql) = normalize_urls("https://git.example.com/api/v4/").unwrap();
+        assert_eq!(rest, "https://git.example.com/api/v4");
+        assert_eq!(gql, "https://git.example.com/api/graphql");
     }
 
     #[test]
