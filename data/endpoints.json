@@ -1,0 +1,3729 @@
+{
+  "merge_merge_request": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": true,
+    "method": "PUT",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/merge",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "approve_merge_request": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/approve",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "unapprove_merge_request": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/unapprove",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "get_merge_request_approval_state": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/approval_state",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "get_merge_request_conflicts": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/conflicts",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "list_merge_request_pipelines": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/pipelines",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "execute_graphql": {
+    "category": "core",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "POST to the GraphQL endpoint, not /api/v4. Endpoint is derived from the REST base URL: take the origin plus everything before the trailing '/api/v4' in the base path, then append '/api/graphql' (e.g. https://git.example.com/gitlab/api/v4 -> https://git.example.com/gitlab/api/graphql). Overridable via GITLAB_GRAPHQL_URL env var. Body: {\"query\": <query>, \"variables\": <variables or {}>}. Same auth headers as REST. Reference uses a 45s abort timeout. Read-only mode rejects mutation/subscription queries; modify mode rejects delete mutations. Returns the raw GraphQL JSON envelope (data/errors)."
+  },
+  "create_or_update_file": {
+    "category": "repositories",
+    "read_only": false,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "Recorded method GET was the existence probe, not the write. Exact sequence in createOrUpdateFile(): (1) GET /projects/{project_id}/repository/files/{file_path}?ref={branch} via getFileContents (`branch` is required by the input schema, so the default-branch lookup inside getFileContents never runs). (2) If that GET succeeds the write method becomes PUT (update existing file) and, when the response is a single file object, body.commit_id / body.last_commit_id are filled from the caller's commit_id / last_commit_id when given, otherwise from the fetched file's commit_id / last_commit_id. If that GET fails with \"File not found\" (404) the write method stays POST (create) and only caller-supplied commit_id / last_commit_id are sent; any other error propagates. (3) The write goes to the SAME path /projects/{project_id}/repository/files/{file_path} with JSON body {branch, content, commit_message, encoding, previous_path?, commit_id?, last_commit_id?}. encoding = the `encoding` argument if given else GITLAB_REPO_FILE_ENCODING; content is passed through verbatim when `encoding` was supplied by the caller, otherwise re-encoded according to GITLAB_REPO_FILE_ENCODING. file_path is URL-encoded as a single path segment (slashes escaped), as is project_id."
+  },
+  "search_repositories": {
+    "category": "repositories",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects",
+    "path_params": []
+  },
+  "create_repository": {
+    "category": "repositories",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects",
+    "path_params": []
+  },
+  "create_group": {
+    "category": "groups",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/groups",
+    "path_params": []
+  },
+  "get_file_contents": {
+    "category": "repositories",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/files/{file_path}",
+    "path_params": [
+      "project_id",
+      "file_path"
+    ]
+  },
+  "push_files": {
+    "category": "repositories",
+    "read_only": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/projects/{project_id}/repository/commits",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "create_issue": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/issues",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "create_merge_request": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/merge_requests",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "fork_repository": {
+    "category": "repositories",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/fork",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "create_branch": {
+    "category": "branches",
+    "read_only": false,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "Recorded record captured the resolver GET /projects/{project_id} (getDefaultBranchRef) instead of the real endpoint. Real call is createBranch(): POST /projects/{project_id}/repository/branches with JSON body {branch: <branch arg>, ref: <resolved ref>}. When the `ref` argument is omitted the case block first performs GET /projects/{project_id} and uses project.default_branch, falling back to the literal \"main\" when that field is null/absent; when `ref` is supplied no lookup happens. project_id is URL-encoded as a single path segment (slashes escaped)."
+  },
+  "get_branch": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/branches/{branch_name}",
+    "path_params": [
+      "project_id",
+      "branch_name"
+    ]
+  },
+  "list_branches": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/branches",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "delete_branch": {
+    "category": "branches",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/repository/branches/{branch_name}",
+    "path_params": [
+      "project_id",
+      "branch_name"
+    ]
+  },
+  "list_protected_branches": {
+    "category": "branches",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/protected_branches",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_protected_branch": {
+    "category": "branches",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/protected_branches/{branch_name}",
+    "path_params": [
+      "project_id",
+      "branch_name"
+    ]
+  },
+  "protect_branch": {
+    "category": "branches",
+    "read_only": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/projects/{project_id}/protected_branches",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "unprotect_branch": {
+    "category": "branches",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/protected_branches/{branch_name}",
+    "path_params": [
+      "project_id",
+      "branch_name"
+    ]
+  },
+  "update_default_branch": {
+    "category": "branches",
+    "read_only": false,
+    "destructive": true,
+    "method": "PUT",
+    "path": "/projects/{project_id}",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_merge_request": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "get_merge_request_diffs": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/changes",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "list_merge_request_changed_files": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/changes",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "list_merge_request_diffs": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/diffs",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "get_merge_request_file_diff": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/diffs",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "list_merge_request_versions": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/versions",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "get_merge_request_version": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/versions/{version_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "version_id"
+    ]
+  },
+  "get_branch_diffs": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/compare",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "update_merge_request": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "create_note": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/{noteable_type}s/{noteable_iid}/notes",
+    "path_params": [
+      "project_id",
+      "noteable_type",
+      "noteable_iid"
+    ]
+  },
+  "create_merge_request_thread": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/discussions",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "resolve_merge_request_thread": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "discussion_id"
+    ]
+  },
+  "mr_discussions": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/discussions",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ],
+    "notes": "Query params: page, per_page. project_id is URL-encoded as a single segment (slashes escaped). Reference wraps the response as {items: [...], pagination: {x_next_page, x_page, x_per_page, x_prev_page, x_total, x_total_pages}} read from the X-Next-Page/X-Page/X-Per-Page/X-Prev-Page/X-Total/X-Total-Pages response headers.",
+    "wrap": "pagination"
+  },
+  "delete_merge_request_discussion_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}/notes/{note_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "discussion_id",
+      "note_id"
+    ]
+  },
+  "update_merge_request_discussion_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}/notes/{note_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "discussion_id",
+      "note_id"
+    ]
+  },
+  "create_merge_request_discussion_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}/notes",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "discussion_id"
+    ]
+  },
+  "create_merge_request_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/notes",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "delete_merge_request_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/notes/{note_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "note_id"
+    ]
+  },
+  "get_merge_request_note": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/notes/{note_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "note_id"
+    ]
+  },
+  "get_merge_request_notes": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/notes",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "update_merge_request_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/notes/{note_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "note_id"
+    ]
+  },
+  "get_draft_note": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/draft_notes/{draft_note_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "draft_note_id"
+    ]
+  },
+  "list_draft_notes": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/draft_notes",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "create_draft_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/draft_notes",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "update_draft_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/draft_notes/{draft_note_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "draft_note_id"
+    ]
+  },
+  "delete_draft_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/draft_notes/{draft_note_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "draft_note_id"
+    ]
+  },
+  "publish_draft_note": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/draft_notes/{draft_note_id}/publish",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "draft_note_id"
+    ]
+  },
+  "bulk_publish_draft_notes": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/draft_notes/bulk_publish",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "list_merge_request_emoji_reactions": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/award_emoji",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ]
+  },
+  "list_merge_request_note_emoji_reactions": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": true
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}/notes/{note_id}/award_emoji",
+        "path_params": [
+          "project_id",
+          "merge_request_iid",
+          "discussion_id",
+          "note_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": false
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/notes/{note_id}/award_emoji",
+        "path_params": [
+          "project_id",
+          "merge_request_iid",
+          "note_id"
+        ]
+      }
+    ],
+    "notes": "note_id is required; discussion_id is optional and only nests the note under /discussions/{discussion_id}/notes/."
+  },
+  "create_merge_request_emoji_reaction": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "POST",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/award_emoji",
+    "path_params": [
+      "project_id",
+      "merge_request_iid"
+    ],
+    "notes": "JSON body: {\"name\": <name>} only."
+  },
+  "delete_merge_request_emoji_reaction": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "DELETE",
+    "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/award_emoji/{award_id}",
+    "path_params": [
+      "project_id",
+      "merge_request_iid",
+      "award_id"
+    ],
+    "notes": "Empty response body; reference returns a fixed success string."
+  },
+  "create_merge_request_note_emoji_reaction": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": true
+        },
+        "method": "POST",
+        "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}/notes/{note_id}/award_emoji",
+        "path_params": [
+          "project_id",
+          "merge_request_iid",
+          "discussion_id",
+          "note_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": false
+        },
+        "method": "POST",
+        "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/notes/{note_id}/award_emoji",
+        "path_params": [
+          "project_id",
+          "merge_request_iid",
+          "note_id"
+        ]
+      }
+    ],
+    "notes": "JSON body: {\"name\": <name>} only."
+  },
+  "delete_merge_request_note_emoji_reaction": {
+    "category": "merge_requests",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": true
+        },
+        "method": "DELETE",
+        "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/discussions/{discussion_id}/notes/{note_id}/award_emoji/{award_id}",
+        "path_params": [
+          "project_id",
+          "merge_request_iid",
+          "discussion_id",
+          "note_id",
+          "award_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": false
+        },
+        "method": "DELETE",
+        "path": "/projects/{project_id}/merge_requests/{merge_request_iid}/notes/{note_id}/award_emoji/{award_id}",
+        "path_params": [
+          "project_id",
+          "merge_request_iid",
+          "note_id",
+          "award_id"
+        ]
+      }
+    ],
+    "notes": "Empty response body; reference returns a fixed success string."
+  },
+  "update_issue_note": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/issues/{issue_iid}/discussions/{discussion_id}/notes/{note_id}",
+    "path_params": [
+      "project_id",
+      "issue_iid",
+      "discussion_id",
+      "note_id"
+    ]
+  },
+  "create_issue_note": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": true
+        },
+        "method": "POST",
+        "path": "/projects/{project_id}/issues/{issue_iid}/discussions/{discussion_id}/notes",
+        "path_params": [
+          "project_id",
+          "issue_iid",
+          "discussion_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": false
+        },
+        "method": "POST",
+        "path": "/projects/{project_id}/issues/{issue_iid}/notes",
+        "path_params": [
+          "project_id",
+          "issue_iid"
+        ]
+      }
+    ],
+    "notes": "JSON body: {\"body\": <body>} plus {\"created_at\": <created_at>} when created_at is supplied. discussion_id (when given) replies inside an existing thread."
+  },
+  "list_issue_emoji_reactions": {
+    "category": "issues",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/issues/{issue_iid}/award_emoji",
+    "path_params": [
+      "project_id",
+      "issue_iid"
+    ]
+  },
+  "list_issue_note_emoji_reactions": {
+    "category": "issues",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": true
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/issues/{issue_iid}/discussions/{discussion_id}/notes/{note_id}/award_emoji",
+        "path_params": [
+          "project_id",
+          "issue_iid",
+          "discussion_id",
+          "note_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": false
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/issues/{issue_iid}/notes/{note_id}/award_emoji",
+        "path_params": [
+          "project_id",
+          "issue_iid",
+          "note_id"
+        ]
+      }
+    ]
+  },
+  "create_issue_emoji_reaction": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "POST",
+    "path": "/projects/{project_id}/issues/{issue_iid}/award_emoji",
+    "path_params": [
+      "project_id",
+      "issue_iid"
+    ],
+    "notes": "JSON body: {\"name\": <name>} only."
+  },
+  "delete_issue_emoji_reaction": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "DELETE",
+    "path": "/projects/{project_id}/issues/{issue_iid}/award_emoji/{award_id}",
+    "path_params": [
+      "project_id",
+      "issue_iid",
+      "award_id"
+    ],
+    "notes": "Empty response body; reference returns a fixed success string."
+  },
+  "create_issue_note_emoji_reaction": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": true
+        },
+        "method": "POST",
+        "path": "/projects/{project_id}/issues/{issue_iid}/discussions/{discussion_id}/notes/{note_id}/award_emoji",
+        "path_params": [
+          "project_id",
+          "issue_iid",
+          "discussion_id",
+          "note_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": false
+        },
+        "method": "POST",
+        "path": "/projects/{project_id}/issues/{issue_iid}/notes/{note_id}/award_emoji",
+        "path_params": [
+          "project_id",
+          "issue_iid",
+          "note_id"
+        ]
+      }
+    ],
+    "notes": "JSON body: {\"name\": <name>} only."
+  },
+  "delete_issue_note_emoji_reaction": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": true
+        },
+        "method": "DELETE",
+        "path": "/projects/{project_id}/issues/{issue_iid}/discussions/{discussion_id}/notes/{note_id}/award_emoji/{award_id}",
+        "path_params": [
+          "project_id",
+          "issue_iid",
+          "discussion_id",
+          "note_id",
+          "award_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "discussion_id",
+          "present": false
+        },
+        "method": "DELETE",
+        "path": "/projects/{project_id}/issues/{issue_iid}/notes/{note_id}/award_emoji/{award_id}",
+        "path_params": [
+          "project_id",
+          "issue_iid",
+          "note_id",
+          "award_id"
+        ]
+      }
+    ],
+    "notes": "Empty response body; reference returns a fixed success string."
+  },
+  "list_issues": {
+    "category": "issues",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "project_id",
+          "present": true
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/issues",
+        "path_params": [
+          "project_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "project_id",
+          "present": false
+        },
+        "method": "GET",
+        "path": "/issues",
+        "path_params": []
+      }
+    ],
+    "notes": "listIssues() branches: `if (projectId || (ENABLE_STRICT_PROJECT_SCOPE && allowedProjectIds.length > 0))` it hits /projects/{effective project id}/issues, otherwise the instance-wide /issues. project_id is OPTIONAL in the input schema, so the instance-wide variant is reachable. Caveat for the branch condition: the project variant is also taken when project_id is omitted but GITLAB_PROJECT_ID / a strict-scope allowlist supplies a default (getEffectiveProjectId resolves it); with strict project scope enabled the instance-wide variant is never used. Every other argument is appended as a query param, except `labels` and `assignee_username`, which are appended as repeated `labels[]` / `assignee_username[]` entries (a non-array value is appended once under the [] key)."
+  },
+  "my_issues": {
+    "category": "issues",
+    "read_only": true,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "Two REST calls; the recorded `GET /user` was only the first (resolver) call. Sequence: (1) getCurrentUser() -> GET /user; if that responds 401/403 while a CI job token header is in use, it retries GET /job and takes `.user` from that body; any other failure aborts the tool. (2) listIssues(effectiveProjectId, opts) -> GET /projects/{project_id}/issues when a project id resolves, otherwise the instance-wide GET /issues (same branch as list_issues; project_id is optional and may be supplied by GITLAB_PROJECT_ID / strict-scope allowlist -- if getEffectiveProjectId throws the 'No project ID provided and GITLAB_PROJECT_ID is not set' error it is swallowed and the empty/instance-wide form is used). Filters sent on call 2: assignee_username[]=<current user's username>, or assignee_id=<current user's id> when the user has no username; state defaults to 'opened' when the arg is absent; labels, milestone, search, created_after, created_before, updated_after, updated_before, per_page, page are forwarded verbatim (labels goes out as repeated labels[] entries)."
+  },
+  "get_issue": {
+    "category": "issues",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/issues/{issue_iid}",
+    "path_params": [
+      "project_id",
+      "issue_iid"
+    ]
+  },
+  "update_issue": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/issues/{issue_iid}",
+    "path_params": [
+      "project_id",
+      "issue_iid"
+    ]
+  },
+  "update_issue_description_patch": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "Read-modify-write, up to three REST calls; the recorded `GET` was only the first (read) call. Sequence: (1) getIssue() -> GET /projects/{project_id}/issues/{issue_iid}, taking `description` (empty string when null). (2) Patch applied locally, no HTTP: patch_type='search_replace' parses `patch` into <<<<<<< SEARCH / ======= / >>>>>>> REPLACE blocks (throws 'No valid search/replace blocks found' when none parse; allow_multiple controls multi-occurrence replacement), patch_type='unified_diff' applies `patch` as a unified diff. (3) If dry_run is true the tool RETURNS HERE with a preview and makes no further calls. (4) updateIssue() -> PUT /projects/{project_id}/issues/{issue_iid} with body {\"description\": <patched text>} only. (5) If create_note is true, createIssueNote() -> POST /projects/{project_id}/issues/{issue_iid}/notes (top-level note, no discussion_id) with body {\"body\": \"Updated issue description using patch-based tool.\\n\\n<summary>\"}; a failure here is caught and reported in the result as note.status='failed' instead of failing the tool."
+  },
+  "delete_issue": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/issues/{issue_iid}",
+    "path_params": [
+      "project_id",
+      "issue_iid"
+    ]
+  },
+  "list_todos": {
+    "category": "issues",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/todos",
+    "path_params": []
+  },
+  "mark_todo_done": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/todos/{id}/mark_as_done",
+    "path_params": [
+      "id"
+    ]
+  },
+  "mark_all_todos_done": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/todos/mark_as_done",
+    "path_params": []
+  },
+  "list_issue_links": {
+    "category": "issues",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/issues/{issue_iid}/links",
+    "path_params": [
+      "project_id",
+      "issue_iid"
+    ]
+  },
+  "list_issue_discussions": {
+    "category": "issues",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/issues/{issue_iid}/discussions",
+    "path_params": [
+      "project_id",
+      "issue_iid"
+    ],
+    "notes": "Query params: page, per_page. Same {items, pagination} envelope built from X-Next-Page/X-Page/X-Per-Page/X-Prev-Page/X-Total/X-Total-Pages headers as mr_discussions.",
+    "wrap": "pagination"
+  },
+  "get_issue_link": {
+    "category": "issues",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/issues/{issue_iid}/links/{issue_link_id}",
+    "path_params": [
+      "project_id",
+      "issue_iid",
+      "issue_link_id"
+    ]
+  },
+  "create_issue_link": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/issues/{issue_iid}/links",
+    "path_params": [
+      "project_id",
+      "issue_iid"
+    ]
+  },
+  "delete_issue_link": {
+    "category": "issues",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/issues/{issue_iid}/links/{issue_link_id}",
+    "path_params": [
+      "project_id",
+      "issue_iid",
+      "issue_link_id"
+    ]
+  },
+  "list_namespaces": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/namespaces",
+    "path_params": [],
+    "notes": "Query params: search, page, per_page, owned (booleans stringified). Reference builds this URL from the primary configured GITLAB_API_URL rather than the per-session effective API URL."
+  },
+  "get_namespace": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/namespaces/{namespace_id}",
+    "path_params": [
+      "namespace_id"
+    ],
+    "notes": "namespace_id is encodeURIComponent-encoded (a full path like 'group/sub' becomes 'group%2Fsub'). Built from the primary configured GITLAB_API_URL."
+  },
+  "verify_namespace": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/namespaces/{path}/exists",
+    "path_params": [
+      "path"
+    ],
+    "notes": "The tool argument is literally named 'path'. It is encodeURIComponent-encoded into the URL. Optional query param: parent_id. Built from the primary configured GITLAB_API_URL."
+  },
+  "get_project": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "list_projects": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects",
+    "path_params": [],
+    "notes": "Every supplied argument is forwarded verbatim as a query param (booleans as 'true'/'false'): search, search_namespaces, owned, membership, simple, archived, visibility, order_by, sort, with_issues_enabled, with_merge_requests_enabled, min_access_level, topic, page, per_page. Reference additionally filters the returned array through the project allowlist client-side."
+  },
+  "update_project": {
+    "category": "projects",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "list_project_members": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "include_inheritance",
+          "present": true
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/members/all",
+        "path_params": [
+          "project_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "include_inheritance",
+          "present": false
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/members",
+        "path_params": [
+          "project_id"
+        ]
+      }
+    ],
+    "notes": "The selector is a truthiness check on include_inheritance: only include_inheritance=true selects /members/all; false or absent selects /members. Query params: query, per_page, page, plus repeated 'user_ids[]' and 'skip_users[]' entries for the user_ids / skip_users arrays."
+  },
+  "list_group_members": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "include_inheritance",
+          "present": true
+        },
+        "method": "GET",
+        "path": "/groups/{group_id}/members/all",
+        "path_params": [
+          "group_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "include_inheritance",
+          "present": false
+        },
+        "method": "GET",
+        "path": "/groups/{group_id}/members",
+        "path_params": [
+          "group_id"
+        ]
+      }
+    ],
+    "notes": "The selector is a truthiness check on include_inheritance: only include_inheritance=true selects /members/all; false or absent selects /members. Query params: query, per_page, page, plus repeated 'user_ids[]' and 'skip_users[]' entries for the user_ids / skip_users arrays."
+  },
+  "list_labels": {
+    "category": "labels",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/labels",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_label": {
+    "category": "labels",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/labels/{label_id}",
+    "path_params": [
+      "project_id",
+      "label_id"
+    ],
+    "notes": "label_id may be a numeric id or a label name; it is encodeURIComponent-encoded. Optional query param include_ancestor_groups ('true'/'false'), sent only when explicitly provided."
+  },
+  "create_label": {
+    "category": "labels",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/labels",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "update_label": {
+    "category": "labels",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "PUT",
+    "path": "/projects/{project_id}/labels/{label_id}",
+    "path_params": [
+      "project_id",
+      "label_id"
+    ],
+    "notes": "JSON body carries the remaining args: new_name, color, description, priority (project_id and label_id are stripped out of the body)."
+  },
+  "delete_label": {
+    "category": "labels",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "DELETE",
+    "path": "/projects/{project_id}/labels/{label_id}",
+    "path_params": [
+      "project_id",
+      "label_id"
+    ],
+    "notes": "Empty response body; reference returns {status: 'success', message: 'Label deleted successfully'}."
+  },
+  "list_group_projects": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/projects",
+    "path_params": [
+      "group_id"
+    ]
+  },
+  "list_wiki_pages": {
+    "category": "wiki",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/wikis",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_wiki_page": {
+    "category": "wiki",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/wikis/{slug}",
+    "path_params": [
+      "project_id",
+      "slug"
+    ]
+  },
+  "create_wiki_page": {
+    "category": "wiki",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/wikis",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "update_wiki_page": {
+    "category": "wiki",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/wikis/{slug}",
+    "path_params": [
+      "project_id",
+      "slug"
+    ]
+  },
+  "delete_wiki_page": {
+    "category": "wiki",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/wikis/{slug}",
+    "path_params": [
+      "project_id",
+      "slug"
+    ]
+  },
+  "list_group_wiki_pages": {
+    "category": "wiki",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/wikis",
+    "path_params": [
+      "group_id"
+    ]
+  },
+  "get_group_wiki_page": {
+    "category": "wiki",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/wikis/{slug}",
+    "path_params": [
+      "group_id",
+      "slug"
+    ]
+  },
+  "create_group_wiki_page": {
+    "category": "wiki",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/groups/{group_id}/wikis",
+    "path_params": [
+      "group_id"
+    ]
+  },
+  "update_group_wiki_page": {
+    "category": "wiki",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/groups/{group_id}/wikis/{slug}",
+    "path_params": [
+      "group_id",
+      "slug"
+    ]
+  },
+  "delete_group_wiki_page": {
+    "category": "wiki",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/groups/{group_id}/wikis/{slug}",
+    "path_params": [
+      "group_id",
+      "slug"
+    ]
+  },
+  "get_repository_tree": {
+    "category": "repositories",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/tree",
+    "path_params": [
+      "project_id"
+    ],
+    "notes": "Query params: path, ref, recursive (only appended as 'true' when truthy), per_page, page_token, pagination. Keyset pagination token comes from the X-Next-Page-Token response header, falling back to X-Next-Page when pagination=keyset; the reference then returns {items, next_page_token, pagination_note} instead of a bare array whenever pagination=keyset or a token was returned. 404 is surfaced as 'Repository or path not found'.",
+    "wrap": "keyset"
+  },
+  "list_pipelines": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/pipelines",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_pipeline": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ]
+  },
+  "get_pipeline_variables": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}/variables",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ]
+  },
+  "get_pipeline_test_report": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}/test_report",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ],
+    "notes": "Optional query params: page, per_page (only sent when defined). project_id is URL-encoded as a whole segment."
+  },
+  "get_pipeline_test_report_summary": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}/test_report_summary",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ],
+    "notes": "Same helper as get_pipeline_test_report with summary=true (endpoint suffix test_report_summary). Optional query params: page, per_page."
+  },
+  "delete_pipeline": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ]
+  },
+  "update_pipeline_metadata": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}/metadata",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ]
+  },
+  "list_deployments": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/deployments",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_deployment": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/deployments/{deployment_id}",
+    "path_params": [
+      "project_id",
+      "deployment_id"
+    ]
+  },
+  "create_deployment": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "POST",
+    "path": "/projects/{project_id}/deployments",
+    "path_params": [
+      "project_id"
+    ],
+    "notes": "JSON body = all args except project_id: environment, sha, ref, tag, status."
+  },
+  "update_deployment": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "PUT",
+    "path": "/projects/{project_id}/deployments/{deployment_id}",
+    "path_params": [
+      "project_id",
+      "deployment_id"
+    ],
+    "notes": "JSON body = { status }. 204 responses are reported as { success: true }."
+  },
+  "delete_deployment": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "DELETE",
+    "path": "/projects/{project_id}/deployments/{deployment_id}",
+    "path_params": [
+      "project_id",
+      "deployment_id"
+    ],
+    "notes": "No body. 204 responses are reported as { success: true }."
+  },
+  "list_deployment_merge_requests": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/deployments/{deployment_id}/merge_requests",
+    "path_params": [
+      "project_id",
+      "deployment_id"
+    ],
+    "notes": "Remaining args (page, per_page) become query params."
+  },
+  "approve_deployment": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "POST",
+    "path": "/projects/{project_id}/deployments/{deployment_id}/approval",
+    "path_params": [
+      "project_id",
+      "deployment_id"
+    ],
+    "notes": "JSON body = { status, comment?, represented_as? }."
+  },
+  "list_environments": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/environments",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_environment": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/environments/{environment_id}",
+    "path_params": [
+      "project_id",
+      "environment_id"
+    ]
+  },
+  "update_environment": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "PUT",
+    "path": "/projects/{project_id}/environments/{environment_id}",
+    "path_params": [
+      "project_id",
+      "environment_id"
+    ],
+    "notes": "JSON body = remaining args: external_url, tier, auto_stop_setting."
+  },
+  "delete_environment": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "DELETE",
+    "path": "/projects/{project_id}/environments/{environment_id}",
+    "path_params": [
+      "project_id",
+      "environment_id"
+    ],
+    "notes": "No body. 204 responses are reported as { success: true }."
+  },
+  "stop_environment": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "POST",
+    "path": "/projects/{project_id}/environments/{environment_id}/stop",
+    "path_params": [
+      "project_id",
+      "environment_id"
+    ],
+    "notes": "No body; `force` is sent as a QUERY param (only when defined), not in the body.",
+    "query_params": [
+      "force"
+    ]
+  },
+  "stop_stale_environments": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "POST",
+    "path": "/projects/{project_id}/environments/stop_stale",
+    "path_params": [
+      "project_id"
+    ],
+    "notes": "No body; `before` is sent as a QUERY param.",
+    "query_params": [
+      "before"
+    ]
+  },
+  "delete_review_app_environments": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "DELETE",
+    "path": "/projects/{project_id}/environments/review_apps",
+    "path_params": [
+      "project_id"
+    ],
+    "notes": "No body; remaining args (before, limit, dry_run) are sent as QUERY params, stringified, only when defined.",
+    "query_params": [
+      "before",
+      "limit",
+      "dry_run"
+    ]
+  },
+  "list_pipeline_triggers": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/triggers",
+    "path_params": [
+      "project_id"
+    ],
+    "notes": "Response must be redacted: strip `token`, `runners_token`, `import_url` from each item before returning to the model.",
+    "redact": [
+      "token",
+      "runners_token",
+      "import_url"
+    ]
+  },
+  "get_pipeline_trigger": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/triggers/{trigger_id}",
+    "path_params": [
+      "project_id",
+      "trigger_id"
+    ],
+    "notes": "Response must be redacted: strip `token`, `runners_token`, `import_url`.",
+    "redact": [
+      "token",
+      "runners_token",
+      "import_url"
+    ]
+  },
+  "create_pipeline_trigger": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "POST",
+    "path": "/projects/{project_id}/triggers",
+    "path_params": [
+      "project_id"
+    ],
+    "notes": "JSON body = { description }. Deliberately NOT redacted: the response carries the newly issued token once."
+  },
+  "update_pipeline_trigger": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "PUT",
+    "path": "/projects/{project_id}/triggers/{trigger_id}",
+    "path_params": [
+      "project_id",
+      "trigger_id"
+    ],
+    "notes": "JSON body = { description }. Response must be redacted: strip `token`, `runners_token`, `import_url`.",
+    "redact": [
+      "token",
+      "runners_token",
+      "import_url"
+    ]
+  },
+  "delete_pipeline_trigger": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "DELETE",
+    "path": "/projects/{project_id}/triggers/{trigger_id}",
+    "path_params": [
+      "project_id",
+      "trigger_id"
+    ],
+    "notes": "No body. 204 responses are reported as { success: true }."
+  },
+  "trigger_pipeline": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/trigger/pipeline",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "list_pipeline_jobs": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}/jobs",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ]
+  },
+  "list_pipeline_trigger_jobs": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}/bridges",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ]
+  },
+  "get_pipeline_job": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/jobs/{job_id}",
+    "path_params": [
+      "project_id",
+      "job_id"
+    ]
+  },
+  "get_pipeline_job_output": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/jobs/{job_id}/trace",
+    "path_params": [
+      "project_id",
+      "job_id"
+    ]
+  },
+  "validate_ci_lint": {
+    "category": "ci",
+    "read_only": true,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/ci/lint",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "validate_project_ci_lint": {
+    "category": "ci",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/ci/lint",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "list_ci_catalog_resources": {
+    "category": "ci",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "Sent through executeGitLabGraphQL (POST {origin}{prefix}/api/graphql, 45s abort timeout) which returns the RAW response body, so the tool result is the whole {\"data\":{...}} envelope, pretty-printed with JSON.stringify(result, null, 2). No result_path unwrapping and no client-side GraphQL-errors check. All eight variables are always present in the variables object; absent optional args are sent as JSON null/undefined (JSON.stringify drops undefined keys). first defaults to 20 when the arg is missing; zod already bounds it to 1..100. group_ids is an array of GroupID strings, topics an array of strings; scope/sort/verification_level are passed through as the uppercase enum strings the tool schema declares.",
+    "query": "query ListCiCatalogResources(\n            $search: String,\n            $first: Int,\n            $after: String,\n            $groupIds: [GroupID!],\n            $scope: CiCatalogResourceScope,\n            $sort: CiCatalogResourceSort,\n            $topics: [String!],\n            $verificationLevel: CiCatalogResourceVerificationLevel\n          ) {\n            ciCatalogResources(\n              search: $search,\n              first: $first,\n              after: $after,\n              groupIds: $groupIds,\n              scope: $scope,\n              sort: $sort,\n              topics: $topics,\n              verificationLevel: $verificationLevel\n            ) {\n              nodes {\n                id\n                name\n                description\n                fullPath\n                icon\n                starCount\n                topics\n                verificationLevel\n                visibilityLevel\n                webPath\n                latestReleasedAt\n                last30DayUsageCount\n              }\n              pageInfo { hasNextPage endCursor }\n            }\n          }",
+    "variables": {
+      "search": {
+        "from": "search"
+      },
+      "first": {
+        "from": "first",
+        "default": 20
+      },
+      "after": {
+        "from": "after"
+      },
+      "groupIds": {
+        "from": "group_ids"
+      },
+      "scope": {
+        "from": "scope"
+      },
+      "sort": {
+        "from": "sort"
+      },
+      "topics": {
+        "from": "topics"
+      },
+      "verificationLevel": {
+        "from": "verification_level"
+      }
+    }
+  },
+  "get_ci_catalog_resource": {
+    "category": "ci",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "Exactly one of id / full_path must be supplied (zod union + refine: \"Provide exactly one of id or full_path\"); the other is sent as null. Sent through executeGitLabGraphQL, so the whole {\"data\":{...}} envelope is returned, pretty-printed with JSON.stringify(result, null, 2); no result_path unwrapping and no GraphQL-errors check. versionLimit/componentLimit/includeReadme are non-null GraphQL variables, hence the defaults 5 / 20 / false must always be filled in. Client-side post-filter: when component_name is set, for every node in data.ciCatalogResource.versions.nodes replace version.components.nodes with only the components whose name === component_name (versions whose components.nodes is not an array are left untouched); component_name is NOT sent to GraphQL. readme is only selected when includeReadme is true (@include directive).",
+    "query": "query GetCiCatalogResource(\n            $id: CiCatalogResourceID,\n            $fullPath: ID,\n            $versionLimit: Int!,\n            $componentLimit: Int!,\n            $includeReadme: Boolean!\n          ) {\n            ciCatalogResource(id: $id, fullPath: $fullPath) {\n              id\n              name\n              description\n              fullPath\n              icon\n              starCount\n              topics\n              verificationLevel\n              visibilityLevel\n              webPath\n              latestReleasedAt\n              last30DayUsageCount\n              versions(first: $versionLimit) {\n                nodes {\n                  id\n                  name\n                  path\n                  createdAt\n                  releasedAt\n                  readme @include(if: $includeReadme)\n                  semver { major minor patch }\n                  components(first: $componentLimit) {\n                    nodes {\n                      id\n                      name\n                      description\n                      includePath\n                      last30DayUsageCount\n                      inputs {\n                        name\n                        description\n                        type\n                        required\n                        default\n                        options\n                        regex\n                      }\n                    }\n                    pageInfo { hasNextPage endCursor }\n                  }\n                }\n                pageInfo { hasNextPage endCursor }\n              }\n            }\n          }",
+    "variables": {
+      "id": {
+        "from": "id"
+      },
+      "fullPath": {
+        "from": "full_path"
+      },
+      "versionLimit": {
+        "from": "version_limit",
+        "default": 5
+      },
+      "componentLimit": {
+        "from": "component_limit",
+        "default": 20
+      },
+      "includeReadme": {
+        "from": "include_readme",
+        "default": false
+      }
+    }
+  },
+  "create_pipeline": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/pipeline",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "retry_pipeline": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}/retry",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ]
+  },
+  "cancel_pipeline": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/pipelines/{pipeline_id}/cancel",
+    "path_params": [
+      "project_id",
+      "pipeline_id"
+    ]
+  },
+  "list_pipeline_schedules": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/pipeline_schedules",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_pipeline_schedule": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id"
+    ]
+  },
+  "list_pipeline_schedule_pipelines": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}/pipelines",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id"
+    ]
+  },
+  "create_pipeline_schedule": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/pipeline_schedules",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "update_pipeline_schedule": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id"
+    ]
+  },
+  "delete_pipeline_schedule": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id"
+    ]
+  },
+  "play_pipeline_schedule": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}/play",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id"
+    ]
+  },
+  "take_ownership_pipeline_schedule": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}/take_ownership",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id"
+    ]
+  },
+  "get_pipeline_schedule_variable": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}/variables/{key}",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id",
+      "key"
+    ]
+  },
+  "create_pipeline_schedule_variable": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}/variables",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id"
+    ]
+  },
+  "update_pipeline_schedule_variable": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}/variables/{key}",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id",
+      "key"
+    ]
+  },
+  "delete_pipeline_schedule_variable": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/pipeline_schedules/{pipeline_schedule_id}/variables/{key}",
+    "path_params": [
+      "project_id",
+      "pipeline_schedule_id",
+      "key"
+    ]
+  },
+  "play_pipeline_job": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/jobs/{job_id}/play",
+    "path_params": [
+      "project_id",
+      "job_id"
+    ]
+  },
+  "play_pipeline_jobs": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "For each id in job_ids, sequentially: (1) POST /projects/{project_id}/jobs/{job_id}/play with body { job_variables_attributes } (body only sent when job_variables_attributes is non-empty; the top-level job_inputs param is NOT passed by this tool); (2) poll GET /projects/{project_id}/jobs/{played.id} until job.status is terminal. Terminal job statuses: success, failed, canceled, skipped, manual. Poll interval = poll_interval_seconds (default 5s), overall deadline = timeout_seconds (default 300s) computed once per job at the start of that job's wait; each poll request carries an abort timeout equal to the remaining budget. If the deadline elapses before a terminal status: error 'Timed out waiting for terminal status'. Returns the array of completed job objects."
+  },
+  "retry_pipeline_job": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/jobs/{job_id}/retry",
+    "path_params": [
+      "project_id",
+      "job_id"
+    ]
+  },
+  "cancel_pipeline_job": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/jobs/{job_id}/cancel",
+    "path_params": [
+      "project_id",
+      "job_id"
+    ]
+  },
+  "erase_pipeline_job": {
+    "category": "pipelines",
+    "read_only": false,
+    "destructive": true,
+    "method": "POST",
+    "path": "/projects/{project_id}/jobs/{job_id}/erase",
+    "path_params": [
+      "project_id",
+      "job_id"
+    ]
+  },
+  "wait_for_pipeline": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "Polls GET /projects/{project_id}/pipelines/{pipeline_id} until pipeline.status is terminal. Terminal pipeline statuses: success, failed, canceled, skipped, manual. Fetch once immediately, then sleep min(poll_interval_seconds*1000, remaining) between polls. poll_interval_seconds default 5, timeout_seconds default 300. 404 -> error 'Pipeline not found'. On timeout: error 'Timed out waiting for terminal status; last status: <status>'. Returns the final pipeline object."
+  },
+  "wait_for_job": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "Polls GET /projects/{project_id}/jobs/{job_id} until job.status is terminal. Terminal job statuses: success, failed, canceled, skipped, manual. Same waitForStatus loop as wait_for_pipeline: immediate first fetch, then sleep min(poll_interval_seconds*1000, remaining). poll_interval_seconds default 5, timeout_seconds default 300. 404 -> error 'Job not found'. On timeout: error 'Timed out waiting for terminal status; last status: <status>'. Returns the final job object."
+  },
+  "list_job_artifacts": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/jobs/{job_id}/artifacts/tree",
+    "path_params": [
+      "project_id",
+      "job_id"
+    ]
+  },
+  "download_job_artifacts": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/jobs/{job_id}/artifacts",
+    "path_params": [
+      "project_id",
+      "job_id"
+    ]
+  },
+  "get_job_artifact_file": {
+    "category": "pipelines",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/jobs/{job_id}/artifacts/{artifact_path}",
+    "path_params": [
+      "project_id",
+      "job_id",
+      "artifact_path"
+    ]
+  },
+  "list_merge_requests": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path_variants": [
+      {
+        "when": {
+          "param": "project_id",
+          "present": true
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/merge_requests",
+        "path_params": [
+          "project_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "project_id",
+          "present": false
+        },
+        "method": "GET",
+        "path": "/merge_requests",
+        "path_params": []
+      }
+    ],
+    "notes": "project_id is NOT required by the input schema. listMergeRequests branches: with a project_id (or under ENABLE_STRICT_PROJECT_SCOPE with a non-empty allowlist) it hits the project-scoped endpoint using getEffectiveProjectId(project_id); otherwise it hits the instance-wide GET /merge_requests, which returns the authenticated user's merge requests. Note the instance-wide branch does NOT fall back to GITLAB_PROJECT_ID — only the strict-scope allowlist forces the project branch. All remaining arguments become query params via appendMergeRequestFilters in both variants (labels joined with ',', approved_by_usernames emitted as approved_by_usernames[]=...)."
+  },
+  "list_group_merge_requests": {
+    "category": "merge_requests",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/merge_requests",
+    "path_params": [
+      "group_id"
+    ]
+  },
+  "list_milestones": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/milestones",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_milestone": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/milestones/{milestone_id}",
+    "path_params": [
+      "project_id",
+      "milestone_id"
+    ]
+  },
+  "create_milestone": {
+    "category": "milestones",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/milestones",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "edit_milestone": {
+    "category": "milestones",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/milestones/{milestone_id}",
+    "path_params": [
+      "project_id",
+      "milestone_id"
+    ]
+  },
+  "delete_milestone": {
+    "category": "milestones",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/milestones/{milestone_id}",
+    "path_params": [
+      "project_id",
+      "milestone_id"
+    ]
+  },
+  "get_milestone_issue": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/milestones/{milestone_id}/issues",
+    "path_params": [
+      "project_id",
+      "milestone_id"
+    ]
+  },
+  "get_milestone_merge_requests": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/milestones/{milestone_id}/merge_requests",
+    "path_params": [
+      "project_id",
+      "milestone_id"
+    ]
+  },
+  "promote_milestone": {
+    "category": "milestones",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/milestones/{milestone_id}/promote",
+    "path_params": [
+      "project_id",
+      "milestone_id"
+    ]
+  },
+  "get_milestone_burndown_events": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/milestones/{milestone_id}/burndown_events",
+    "path_params": [
+      "project_id",
+      "milestone_id"
+    ]
+  },
+  "list_group_milestones": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/milestones",
+    "path_params": [
+      "group_id"
+    ]
+  },
+  "get_group_milestone": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/milestones/{milestone_id}",
+    "path_params": [
+      "group_id",
+      "milestone_id"
+    ]
+  },
+  "create_group_milestone": {
+    "category": "milestones",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/groups/{group_id}/milestones",
+    "path_params": [
+      "group_id"
+    ]
+  },
+  "edit_group_milestone": {
+    "category": "milestones",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/groups/{group_id}/milestones/{milestone_id}",
+    "path_params": [
+      "group_id",
+      "milestone_id"
+    ]
+  },
+  "delete_group_milestone": {
+    "category": "milestones",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/groups/{group_id}/milestones/{milestone_id}",
+    "path_params": [
+      "group_id",
+      "milestone_id"
+    ]
+  },
+  "get_group_milestone_issue": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/milestones/{milestone_id}/issues",
+    "path_params": [
+      "group_id",
+      "milestone_id"
+    ]
+  },
+  "get_group_milestone_merge_requests": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/milestones/{milestone_id}/merge_requests",
+    "path_params": [
+      "group_id",
+      "milestone_id"
+    ]
+  },
+  "get_group_milestone_burndown_events": {
+    "category": "milestones",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/milestones/{milestone_id}/burndown_events",
+    "path_params": [
+      "group_id",
+      "milestone_id"
+    ]
+  },
+  "get_users": {
+    "category": "users",
+    "read_only": true,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "Not a single call to GET /users. The tool takes `usernames` (array of strings) and fans out: for each username, in array order and strictly sequentially (deliberately serial to avoid rate limiting), it issues GET /users?username=<username>. From the returned array it picks the entry whose `username` field matches the requested one exactly (case-sensitive, Array.prototype.find); if the array is empty or no exact match exists, the value is null. Any thrown error during a lookup (network failure or GitLab error from handleGitLabError) is caught and logged, and that username's value becomes null — a single failed lookup never fails the tool. The result is an object mapping every requested username -> user object or null (GitLabUsersResponseSchema)."
+  },
+  "get_user": {
+    "category": "users",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/users/{user_id}",
+    "path_params": [
+      "user_id"
+    ]
+  },
+  "whoami": {
+    "category": "users",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/user",
+    "path_params": []
+  },
+  "list_commits": {
+    "category": "branches",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/commits",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_commit": {
+    "category": "branches",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/commits/{sha}",
+    "path_params": [
+      "project_id",
+      "sha"
+    ]
+  },
+  "get_commit_diff": {
+    "category": "branches",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/commits/{sha}/diff",
+    "path_params": [
+      "project_id",
+      "sha"
+    ],
+    "notes": "sha is encodeURIComponent-encoded. When full_diff is falsy the reference issues exactly one request with no pagination params and returns that array. When full_diff is true it loops page=1,2,3... appending ?page=N (per_page is left at the server default, which the reference assumes equals GITLAB_COMMIT_FILES_PER_PAGE) and concatenates results until a page returns fewer than that many entries."
+  },
+  "get_file_blame": {
+    "category": "branches",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/files/{file_path}/blame",
+    "path_params": [
+      "project_id",
+      "file_path"
+    ]
+  },
+  "list_commit_statuses": {
+    "category": "branches",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/commits/{sha}/statuses",
+    "path_params": [
+      "project_id",
+      "sha"
+    ]
+  },
+  "create_commit_status": {
+    "category": "branches",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/statuses/{sha}",
+    "path_params": [
+      "project_id",
+      "sha"
+    ]
+  },
+  "list_group_iterations": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/groups/{group_id}/iterations",
+    "path_params": [
+      "group_id"
+    ]
+  },
+  "upload_markdown": {
+    "category": "users",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/uploads",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "download_attachment": {
+    "category": "users",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/uploads/{secret}/{filename}",
+    "path_params": [
+      "project_id",
+      "secret",
+      "filename"
+    ]
+  },
+  "health_check": {
+    "category": "projects",
+    "read_only": true,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "Takes no arguments. Sequence: (1) GET /user with the configured auth headers; authenticated = response.ok. (2) If not authenticated and the status is 401 or 403 and (GITLAB_JOB_TOKEN is set or usesJobTokenHeader()), GET /job; authenticated = jobResponse.ok. (3) If authenticated, GET /version (fetchGitLabVersionMetadata) and parse it into { version, revision, enterprise }; a non-ok response or any thrown error yields null and those fields are simply omitted — the version lookup never fails the health check. Neither the /user nor the /job response body is used, only response.ok. Returns { status: authenticated ? 'ok' : 'error', authenticated, gitlab_url: <effective API URL>, ...version metadata when available }. No handleGitLabError is called on any of the three requests."
+  },
+  "list_events": {
+    "category": "users",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/events",
+    "path_params": []
+  },
+  "get_project_events": {
+    "category": "users",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/events",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "list_releases": {
+    "category": "releases",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/releases",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_release": {
+    "category": "releases",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/releases/{tag_name}",
+    "path_params": [
+      "project_id",
+      "tag_name"
+    ]
+  },
+  "create_release": {
+    "category": "releases",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/releases",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "update_release": {
+    "category": "releases",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/releases/{tag_name}",
+    "path_params": [
+      "project_id",
+      "tag_name"
+    ]
+  },
+  "delete_release": {
+    "category": "releases",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/releases/{tag_name}",
+    "path_params": [
+      "project_id",
+      "tag_name"
+    ]
+  },
+  "create_release_evidence": {
+    "category": "releases",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/releases/{tag_name}/evidence",
+    "path_params": [
+      "project_id",
+      "tag_name"
+    ]
+  },
+  "download_release_asset": {
+    "category": "releases",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/releases/{tag_name}/downloads/{direct_asset_path}",
+    "path_params": [
+      "project_id",
+      "tag_name",
+      "direct_asset_path"
+    ],
+    "notes": "direct_asset_path is a multi-segment path: encode each '/'-separated segment individually and keep the slashes (do NOT percent-encode the separators). tag_name is encoded as a single segment. Response is read as text, not JSON. In remote (IS_REMOTE) deployments the reference does not fetch at all and instead returns a proxied download_url plus the filename."
+  },
+  "list_tags": {
+    "category": "tags",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/tags",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_tag": {
+    "category": "tags",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/tags/{tag_name}",
+    "path_params": [
+      "project_id",
+      "tag_name"
+    ]
+  },
+  "create_tag": {
+    "category": "tags",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/repository/tags",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "delete_tag": {
+    "category": "tags",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/repository/tags/{tag_name}",
+    "path_params": [
+      "project_id",
+      "tag_name"
+    ]
+  },
+  "get_tag_signature": {
+    "category": "tags",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/repository/tags/{tag_name}/signature",
+    "path_params": [
+      "project_id",
+      "tag_name"
+    ]
+  },
+  "get_work_item": {
+    "category": "workitems",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). If data.namespace.workItem is null -> throw `Work item #<iid> not found in project <fullPath>`. The returned work item is flattened client-side: widgets[] are matched by __typename and folded into a lean object {id, iid, title, state, type, webUrl, + optional description/confidential/author/createdAt/closedAt/status/labels/assignees/weight/rolledUpWeight/rolledUpCompletedWeight/healthStatus/startDate/dueDate/milestone/iteration/progress/color/parent/children/blocked/blockedByCount/blockingCount/linkedItems/timeEstimate/totalTimeSpent/development/customFields} — empty or null values are omitted.",
+    "query": "query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n          iid\n          title\n          state\n          description\n          webUrl\n          confidential\n          author { username }\n          createdAt\n          closedAt\n          workItemType { name }\n          widgets {\n            __typename\n            ... on WorkItemWidgetHierarchy {\n              hasChildren hasParent\n              parent { id iid title webUrl workItemType { name } namespace { fullPath } }\n              children { nodes { id iid title state webUrl workItemType { name } namespace { fullPath } } }\n            }\n            ... on WorkItemWidgetStatus { status { id name category color iconName position } }\n            ... on WorkItemWidgetCustomFields {\n              customFieldValues {\n                __typename\n                customField { id name fieldType }\n                ... on WorkItemNumberFieldValue { value }\n                ... on WorkItemTextFieldValue { value }\n                ... on WorkItemSelectFieldValue {\n                  selectedOptions { id value }\n                }\n              }\n            }\n            ... on WorkItemWidgetLabels { labels { nodes { id title color } } }\n            ... on WorkItemWidgetAssignees { assignees { nodes { id username name } } }\n            ... on WorkItemWidgetWeight { weight rolledUpWeight rolledUpCompletedWeight }\n            ... on WorkItemWidgetHealthStatus { healthStatus }\n            ... on WorkItemWidgetStartAndDueDate { startDate dueDate }\n            ... on WorkItemWidgetMilestone { milestone { id title } }\n            ... on WorkItemWidgetLinkedItems {\n              blocked blockedByCount blockingCount\n              linkedItems { nodes { linkType workItem { id iid title state webUrl workItemType { name } namespace { fullPath } } } }\n            }\n            ... on WorkItemWidgetTimeTracking {\n              timeEstimate totalTimeSpent\n            }\n            ... on WorkItemWidgetDevelopment {\n              willAutoCloseByMergeRequest\n              relatedBranches { nodes { name } }\n              relatedMergeRequests {\n                nodes { iid title webUrl state sourceBranch }\n              }\n              closingMergeRequests {\n                nodes {\n                  mergeRequest { iid title webUrl state sourceBranch }\n                }\n              }\n              featureFlags { nodes { name active } }\n            }\n            ... on WorkItemWidgetIteration {\n              iteration { id title startDate dueDate webUrl iterationCadence { id title } }\n            }\n            ... on WorkItemWidgetProgress { progress }\n            ... on WorkItemWidgetColor { color textColor }\n          }\n        }\n      }\n    }",
+    "variables": {
+      "path": {
+        "from": "project_id",
+        "transform": "resolved_full_path"
+      },
+      "iid": {
+        "from": "iid",
+        "transform": "string"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "namespace",
+      "workItem"
+    ]
+  },
+  "list_work_items": {
+    "category": "workitems",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. ROOT FIELD SWITCH: the query root is `${rootField}` — literally `project` when the resolution above yielded kind=project and `group` when it yielded kind=group; `query` below shows the project form, and the group form is byte-identical with `project(fullPath: $path)` replaced by `group(fullPath: $path)`. result_path follows the same switch: [\"data\",\"group\",\"workItems\"] in the group case. transform `work_item_type_enums`: each element of types[] is mapped through {issue:ISSUE, task:TASK, incident:INCIDENT, test_case:TEST_CASE, epic:EPIC, key_result:KEY_RESULT, objective:OBJECTIVE, requirement:REQUIREMENT, ticket:TICKET}, falling back to the raw value with spaces -> underscores and uppercased. transform `state_passthrough`: state === \"opened\" ? \"opened\" : \"closed\" (lowercase, note the IssuableState enum is fed lowercase here). IMPORTANT: only `path` and `first` are always present in the variables object; types (only when the array is non-empty), state, search, assigneeUsernames (only when non-empty), labelName (only when non-empty) and after are added ONLY when supplied — absent filters are omitted rather than sent as null. The tool returns {items, pageInfo} where each item is a flattened {iid, title, state, type, webUrl} plus optional status/labels/assignees/weight/healthStatus/startDate/dueDate/milestone pulled out of widgets[].",
+    "query": "query($path: ID!, $types: [IssueType!], $state: IssuableState, $search: String, $assigneeUsernames: [String!], $labelName: [String!], $first: Int, $after: String) {\n      project(fullPath: $path) {\n        workItems(types: $types, state: $state, search: $search, assigneeUsernames: $assigneeUsernames, labelName: $labelName, first: $first, after: $after) {\n          nodes {\n            id iid title state webUrl workItemType { name }\n            widgets {\n              __typename\n              ... on WorkItemWidgetStatus { status { id name category color } }\n              ... on WorkItemWidgetLabels { labels { nodes { title } } }\n              ... on WorkItemWidgetAssignees { assignees { nodes { username } } }\n              ... on WorkItemWidgetWeight { weight }\n              ... on WorkItemWidgetHealthStatus { healthStatus }\n              ... on WorkItemWidgetStartAndDueDate { startDate dueDate }\n              ... on WorkItemWidgetMilestone { milestone { id title } }\n            }\n          }\n          pageInfo { hasNextPage endCursor }\n        }\n      }\n    }",
+    "variables": {
+      "path": {
+        "from": "project_id",
+        "transform": "resolved_full_path"
+      },
+      "types": {
+        "from": "types",
+        "transform": "work_item_type_enums"
+      },
+      "state": {
+        "from": "state",
+        "transform": "state_passthrough"
+      },
+      "search": {
+        "from": "search"
+      },
+      "assigneeUsernames": {
+        "from": "assignee_usernames"
+      },
+      "labelName": {
+        "from": "label_names"
+      },
+      "first": {
+        "from": "first",
+        "default": 20
+      },
+      "after": {
+        "from": "after"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "project",
+      "workItems"
+    ]
+  },
+  "create_work_item": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. WORK_ITEM_TYPE_NAMES mapping: the lowercase tool enum is mapped through WORK_ITEM_TYPE_NAMES {issue:Issue, task:Task, incident:Incident, test_case:'Test Case', epic:Epic, key_result:'Key Result', objective:Objective, requirement:Requirement, ticket:Ticket} (unknown -> \"Issue\"), then spaces become underscores and the whole string is uppercased (e.g. test_case -> TEST_CASE). STEP 2 (always, GraphQL): transform `work_item_type_gid` = resolveWorkItemTypeGID(<resolved_full_path>, type ?? \"issue\") runs \"query($path: ID!) {\n      namespace(fullPath: $path) {\n        workItemTypes {\n          nodes {\n            id\n            name\n          }\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>} and picks the node whose `name` equals the mapped display name (Issue/Task/Incident/Test Case/Epic/Key Result/Objective/Requirement/Ticket — NOT uppercased here); an unknown tool type throws `Unknown work item type: <type>` and a missing node throws `Work item type '<Name>' not found in project <path>`. STEP 3 (only when labels[] or assignee_usernames[] is non-empty, GraphQL): resolveNamesToIds builds one aliased query \"query($path: ID!, $usernames: [String!]!<, $l0: String!, $l1: String! ...>) {\\n      <project|group>(fullPath: $path) { <l0: labels(title: $l0, includeAncestorGroups: true, first: 1) { nodes { id } } ...  or __typename when there are no labels> }\\n      users(usernames: $usernames) { nodes { id username } }\\n    }\" with {path: <resolved_full_path>, usernames: assignee_usernames ?? [], l<i>: <label name>} — the root field is `group` when the namespace resolved as a group, else `project`. A null root throws `Namespace '<path>' not found or inaccessible`, a label with no node throws `Label '<name>' not found in namespace`, and an unmatched username throws `User '<name>' not found`. STEP 4 (only when parent_iid is supplied): transform `work_item_gid` = resolveWorkItemGID(project_id, iid): first `resolved_full_path` as above, then an extra GraphQL round trip \"query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>, \"iid\": String(iid)}; a missing data.namespace.workItem.id throws `Work item #<iid> not found in namespace <path>`. The value used below is that gid://gitlab/WorkItem/<n>. is run for (project_id, parent_iid) to get $parentId. STEP 5: the workItemCreate mutation. THE DOCUMENT IS ASSEMBLED AT RUNTIME — `query` below is exactly what the bundle emits when only the required args are given; each optional arg appends one variable definition to the `mutation(...)` list and one field to the `input: { ... }` list, in this order: description -> `$description: String!` + `descriptionWidget: { description: $description }`; resolved labelIds (non-empty) -> `$labelIds: [LabelID!]!` + `labelsWidget: { labelIds: $labelIds }`; weight (ONLY when type !== \"incident\" — incidents have no weight widget) -> `$weight: Int` + `weightWidget: { weight: $weight }`; parent_iid -> `$parentId: WorkItemID` + `hierarchyWidget: { parentId: $parentId }`; resolved userIds (non-empty) -> `$assigneeIds: [UserID!]!` + `assigneesWidget: { assigneeIds: $assigneeIds }`; health_status -> `$healthStatus: HealthStatus` + `healthStatusWidget: { healthStatus: $healthStatus }`; start_date and/or due_date -> `$startDate: Date` and/or `$dueDate: Date` + a single `startAndDueDateWidget: { startDate: $startDate, dueDate: $dueDate }` carrying only the supplied halves; milestone_id -> `$milestoneId: MilestoneID` + `milestoneWidget: { milestoneId: $milestoneId }` (a value not starting with `gid://` becomes `gid://gitlab/Milestone/<value>`); iteration_id -> `$iterationId: IterationID` + `iterationWidget: { iterationId: $iterationId }` (same gid coercion with `gid://gitlab/Iteration/<value>`); confidential -> `$confidential: Boolean` + `confidential: $confidential`. Note the namespace variable is named $projectPath but the input field is `namespacePath`. Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). If data.workItemCreate.errors is non-empty -> throw `Failed to create work item: <errors joined by \", \">`. The tool returns the remapped {id, iid, title, type: workItem.workItemType.name, webUrl}.",
+    "query": "mutation($projectPath: ID!, $title: String!, $typeId: WorkItemsTypeID!) {\n    workItemCreate(input: { namespacePath: $projectPath, title: $title, workItemTypeId: $typeId }) {\n      workItem {\n        id\n        iid\n        title\n        webUrl\n        workItemType { name }\n      }\n      errors\n    }\n  }",
+    "variables": {
+      "projectPath": {
+        "from": "project_id",
+        "transform": "resolved_full_path"
+      },
+      "title": {
+        "from": "title"
+      },
+      "typeId": {
+        "from": "type",
+        "default": "issue",
+        "transform": "work_item_type_gid"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "workItemCreate",
+      "workItem"
+    ]
+  },
+  "update_work_item": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "Multi-call GraphQL tool; there is NO REST endpoint and no single document. Sequence: (1) transform `work_item_gid` = resolveWorkItemGID(project_id, iid): first `resolved_full_path` as above, then an extra GraphQL round trip \"query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>, \"iid\": String(iid)}; a missing data.namespace.workItem.id throws `Work item #<iid> not found in namespace <path>`. The value used below is that gid://gitlab/WorkItem/<n>. — this yields workItemGID, projectPath and namespaceKind, and is the only REST traffic (GET /projects/{project_id}, or /groups/... per the prefix/404 rules). transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. (2) When add_labels/remove_labels/assignee_usernames are supplied, one resolveNamesToIds GraphQL call resolves label titles and usernames to GIDs (query \"query($path: ID!, $usernames: [String!]!<, $l<i>: String!...>) {\\n      <project|group>(fullPath: $path) { <l<i>: labels(title: $l<i>, includeAncestorGroups: true, first: 1) { nodes { id } }...> }\\n      users(usernames: $usernames) { nodes { id username } }\\n    }\"); add_labels and remove_labels are concatenated into ONE list and split back by length afterwards. (3) The main mutation, assembled at runtime. With no optional args it is exactly: \"mutation($id: WorkItemID!) {\n    workItemUpdate(input: { id: $id }) {\n      workItem {\n        id\n        iid\n        title\n        state\n        webUrl\n        workItemType { name }\n        widgets {\n          __typename\n          ... on WorkItemWidgetStatus { status { id name category color } }\n          ... on WorkItemWidgetLabels { labels { nodes { title } } }\n          ... on WorkItemWidgetAssignees { assignees { nodes { username } } }\n          ... on WorkItemWidgetWeight { weight }\n          ... on WorkItemWidgetHierarchy {\n            parent { id title workItemType { name } }\n          }\n          ... on WorkItemWidgetHealthStatus { healthStatus }\n          ... on WorkItemWidgetStartAndDueDate { startDate dueDate }\n          ... on WorkItemWidgetMilestone { milestone { id title } }\n        }\n      }\n      errors\n    }\n  }\". Each optional arg appends one variable definition and one input field: title -> `$title: String` + `title: $title`; description -> `$description: String!` + `descriptionWidget: { description: $description }`; add_labels -> `$addLabelIds: [LabelID!]` and remove_labels -> `$removeLabelIds: [LabelID!]`, both folded into a single `labelsWidget: { addLabelIds: $addLabelIds, removeLabelIds: $removeLabelIds }`; resolved userIds (non-empty) -> `$assigneeIds: [UserID!]!` + `assigneesWidget: { assigneeIds: $assigneeIds }`; state_event -> `$stateEvent: WorkItemStateEvent` + `stateEvent: $stateEvent` with the value (state_event === \"close\" ? \"CLOSE\" : \"REOPEN\"); weight -> `$weight: Int` + `weightWidget: { weight: $weight }`; status -> `$status: WorkItemsStatusesStatusID` + `statusWidget: { status: $status }`; health_status -> `$healthStatus: HealthStatus` + `healthStatusWidget: { healthStatus: $healthStatus }`; start_date/due_date -> `$startDate: Date`/`$dueDate: Date` + one `startAndDueDateWidget: { ... }`; milestone_id -> `$milestoneId: MilestoneID` + `milestoneWidget: { milestoneId: $milestoneId }` (non-`gid://` values become `gid://gitlab/Milestone/<v>`); iteration_id -> `$iterationId: IterationID` + `iterationWidget: { iterationId: $iterationId }` (`gid://gitlab/Iteration/<v>`); confidential -> `$confidential: Boolean` + `confidential: $confidential`; custom_fields -> `$customFieldsWidget: [WorkItemWidgetCustomFieldValueInputType!]` + `customFieldsWidget: $customFieldsWidget` where each entry is {customFieldId: <gid://gitlab/IssuablesCustomField/<id> unless already a gid>, textValue?, numberValue?, selectedOptionIds?, dateValue?}; remove_parent -> the literal `hierarchyWidget: { parentId: null }` (no variable), else parent_iid -> `$parentId: WorkItemID` + `hierarchyWidget: { parentId: $parentId }` after resolving (parent_project_id || project_id, parent_iid) through work_item_gid. The mutation's workItem selection is verbatim: workItemUpdate(input:{...}) { workItem { id iid title state webUrl workItemType { name } widgets { __typename ... on WorkItemWidgetStatus { status { id name category color } } ... on WorkItemWidgetLabels { labels { nodes { title } } } ... on WorkItemWidgetAssignees { assignees { nodes { username } } } ... on WorkItemWidgetWeight { weight } ... on WorkItemWidgetHierarchy { parent { id title workItemType { name } } } ... on WorkItemWidgetHealthStatus { healthStatus } ... on WorkItemWidgetStartAndDueDate { startDate dueDate } ... on WorkItemWidgetMilestone { milestone { id title } } } } errors }. Non-empty errors -> throw `Failed to update work item: <joined>`. (4) children_to_add: every child is resolved to a GID via work_item_gid (child.project_id || project_id), then ONE extra mutation \"mutation($id: WorkItemID!, $childrenIds: [WorkItemID!]!) {\n        workItemUpdate(input: { id: $id, hierarchyWidget: { childrenIds: $childrenIds } }) {\n          errors\n        }\n      }\" with {id: <workItemGID>, childrenIds: [...]}; non-empty errors -> `Failed to add children: <joined>`. (5) children_to_remove: for EACH child, a separate mutation \"mutation($id: WorkItemID!) {\\n      workItemUpdate(input: { id: $id, hierarchyWidget: { parentId: null } }) {\\n        workItem { id }\\n        errors\\n      }\\n    }\" run against that child's own GID (removeIssueParent); non-empty errors -> `Failed to remove parent: <joined>`. (6) linked_items_to_add: grouped by link_type (default RELATED), one mutation per group: \"mutation($id: WorkItemID!, $workItemsIds: [WorkItemID!]!, $linkType: WorkItemRelatedLinkType!) {\n          workItemAddLinkedItems(input: { id: $id, workItemsIds: $workItemsIds, linkType: $linkType }) {\n            errors\n          }\n        }\"; errors -> `Failed to add linked items: <joined>`. (7) linked_items_to_remove: all targets resolved, then one \"mutation($id: WorkItemID!, $workItemsIds: [WorkItemID!]!) {\n        workItemRemoveLinkedItems(input: { id: $id, workItemsIds: $workItemsIds }) {\n          errors\n        }\n      }\"; errors -> `Failed to remove linked items: <joined>`. (8) severity -> mutation \"mutation($projectPath: ID!, $severity: IssuableSeverity!, $iid: String!) {\\n      issueSetSeverity(input: { iid: $iid, severity: $severity, projectPath: $projectPath }) {\\n        errors\\n        issue {\\n          iid\\n          id\\n          severity\\n        }\\n      }\\n    }\" with the ALREADY resolved projectPath (no second REST call); errors -> `Failed to set severity: <joined>`. (9) escalation_status -> \"mutation($projectPath: ID!, $status: IssueEscalationStatus!, $iid: String!) {\\n      issueSetEscalationStatus(input: { projectPath: $projectPath, status: $status, iid: $iid }) {\\n        errors\\n        issue {\\n          id\\n          escalationStatus\\n        }\\n      }\\n    }\"; errors -> `Failed to set escalation status: <joined>`. The tool finally returns the flattened step-3 payload plus children_added / children_removed / linked_items_added / linked_items_removed counts and, when supplied, severity and escalation_status echoed back."
+  },
+  "convert_work_item_type": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `work_item_gid` = resolveWorkItemGID(project_id, iid): first `resolved_full_path` as above, then an extra GraphQL round trip \"query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>, \"iid\": String(iid)}; a missing data.namespace.workItem.id throws `Work item #<iid> not found in namespace <path>`. The value used below is that gid://gitlab/WorkItem/<n>. transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. transform `work_item_type_gid` = resolveWorkItemTypeGID(<resolved_full_path>, new_type): a second GraphQL round trip \"query($path: ID!) {\n      namespace(fullPath: $path) {\n        workItemTypes {\n          nodes {\n            id\n            name\n          }\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>}, picking the node whose `name` equals the display name from WORK_ITEM_TYPE_NAMES {issue:Issue, task:Task, incident:Incident, test_case:'Test Case', epic:Epic, key_result:'Key Result', objective:Objective, requirement:Requirement, ticket:Ticket}; an unmapped new_type throws `Unknown work item type: <new_type>` and a missing node throws `Work item type '<Name>' not found in project <path>`. So the tool makes 1 REST + 3 GraphQL calls in total. Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). If data.workItemConvert.errors is non-empty -> throw `Conversion failed: <errors joined by \", \">`. The tool returns the remapped {id: workItem.id, type: workItem.workItemType.name}.",
+    "query": "mutation($id: WorkItemID!, $typeId: WorkItemsTypeID!) {\n      workItemConvert(input: { id: $id, workItemTypeId: $typeId }) {\n        workItem {\n          id\n          workItemType { name }\n        }\n        errors\n      }\n    }",
+    "variables": {
+      "id": {
+        "from": "iid",
+        "transform": "work_item_gid"
+      },
+      "typeId": {
+        "from": "new_type",
+        "transform": "work_item_type_gid"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "workItemConvert",
+      "workItem"
+    ]
+  },
+  "list_work_item_statuses": {
+    "category": "workitems",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. transform `work_item_type_enum`: the lowercase tool enum is mapped through WORK_ITEM_TYPE_NAMES {issue:Issue, task:Task, incident:Incident, test_case:'Test Case', epic:Epic, key_result:'Key Result', objective:Objective, requirement:Requirement, ticket:Ticket} (unknown -> \"Issue\"), then spaces become underscores and the whole string is uppercased (e.g. test_case -> TEST_CASE). (work_item_type defaults to \"issue\" -> \"ISSUE\"). Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). A missing or empty data.namespace.workItemTypes.nodes throws `Work item type '<DisplayName>' not found in project`. Only nodes[0] is used; the tool returns the remapped {work_item_type: node.name, statuses_available: statuses.length > 0, statuses} where statuses come from the widgetDefinitions entry whose __typename is \"WorkItemWidgetDefinitionStatus\" (allowedStatuses, else []), plus optional supported_conversion_types (node.supportedConversionTypes names), allowed_child_types and allowed_parent_types (names from the \"WorkItemWidgetDefinitionHierarchy\" entry) — each added only when non-empty. Requires Premium/Ultimate with configurable statuses.",
+    "query": "query($path: ID!, $typeName: IssueType) {\n      namespace(fullPath: $path) {\n        workItemTypes(name: $typeName) {\n          nodes {\n            id\n            name\n            supportedConversionTypes { id name }\n            widgetDefinitions {\n              __typename\n              ... on WorkItemWidgetDefinitionStatus {\n                allowedStatuses {\n                  id\n                  name\n                  iconName\n                  color\n                  position\n                }\n              }\n              ... on WorkItemWidgetDefinitionHierarchy {\n                allowedChildTypes { nodes { id name } }\n                allowedParentTypes { nodes { id name } }\n              }\n            }\n          }\n        }\n      }\n    }",
+    "variables": {
+      "path": {
+        "from": "project_id",
+        "transform": "resolved_full_path"
+      },
+      "typeName": {
+        "from": "work_item_type",
+        "default": "issue",
+        "transform": "work_item_type_enum"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "namespace",
+      "workItemTypes",
+      "nodes"
+    ]
+  },
+  "list_custom_field_definitions": {
+    "category": "workitems",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. transform `work_item_type_enum`: the lowercase tool enum is mapped through WORK_ITEM_TYPE_NAMES {issue:Issue, task:Task, incident:Incident, test_case:'Test Case', epic:Epic, key_result:'Key Result', objective:Objective, requirement:Requirement, ticket:Ticket} (unknown -> \"Issue\"), then spaces become underscores and the whole string is uppercased (e.g. test_case -> TEST_CASE). (work_item_type defaults to \"issue\" -> \"ISSUE\"). Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). A missing or empty data.namespace.workItemTypes.nodes throws `Work item type '<DisplayName>' not found in project`. Only nodes[0] is used; the tool returns {work_item_type: node.name, custom_fields: [...]}, each entry remapped from the \"WorkItemWidgetDefinitionCustomFields\" widget's customFieldValues[].customField as {id, name, type: fieldType, selectOptions? (only when non-empty), workItemTypes? (names, only when non-empty)}.",
+    "query": "query($path: ID!, $typeName: IssueType) {\n      namespace(fullPath: $path) {\n        workItemTypes(name: $typeName) {\n          nodes {\n            id\n            name\n            widgetDefinitions {\n              __typename\n              ... on WorkItemWidgetDefinitionCustomFields {\n                customFieldValues {\n                  customField {\n                    id\n                    name\n                    fieldType\n                    selectOptions { id value }\n                    workItemTypes { id name }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }",
+    "variables": {
+      "path": {
+        "from": "project_id",
+        "transform": "resolved_full_path"
+      },
+      "typeName": {
+        "from": "work_item_type",
+        "default": "issue",
+        "transform": "work_item_type_enum"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "namespace",
+      "workItemTypes",
+      "nodes"
+    ]
+  },
+  "move_work_item": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. TWO such resolutions happen, in order: project_id -> $projectPath and target_project_id -> $targetProjectPath, i.e. two REST calls (GET /projects/{project_id} then GET /projects/{target_project_id}); the pre_step below describes the first, target_project_id goes through the identical procedure. $iid is String(iid). Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). If data.issueMove.errors is non-empty -> throw `Failed to move work item: <errors joined by \", \">`. Returns data.issueMove.issue as-is ({id, iid, webUrl}).",
+    "query": "mutation($projectPath: ID!, $iid: String!, $targetProjectPath: ID!) {\n      issueMove(input: { projectPath: $projectPath, iid: $iid, targetProjectPath: $targetProjectPath }) {\n        issue { id iid webUrl }\n        errors\n      }\n    }",
+    "variables": {
+      "projectPath": {
+        "from": "project_id",
+        "transform": "resolved_full_path"
+      },
+      "iid": {
+        "from": "iid",
+        "transform": "string"
+      },
+      "targetProjectPath": {
+        "from": "target_project_id",
+        "transform": "resolved_full_path"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "issueMove",
+      "issue"
+    ]
+  },
+  "list_work_item_notes": {
+    "category": "workitems",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. All five variables are ALWAYS sent: pageSize = page_size || 20, after = after || null (explicit null, not omitted), sort = sort || \"CREATED_ASC\". Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). A null data.namespace.workItem throws `Work item #<iid> not found in project <fullPath>`. result_path stops at the workItem because the discussions connection is then located by scanning workItem.widgets[] for the first entry that HAS a `discussions` key (the WorkItemWidgetNotes fragment). The tool returns {discussions, pageInfo: discussions.pageInfo || {}} where each discussion is remapped to {id, notes: [{id, author: author.username, body, createdAt, system? , internal?, lastEditedAt?}], resolved? , resolvable?} — the optional keys are added only when truthy.",
+    "query": "query($path: ID!, $iid: String!, $pageSize: Int, $after: String, $sort: WorkItemDiscussionsSort) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n          widgets(onlyTypes: [NOTES]) {\n            ... on WorkItemWidgetNotes {\n              discussionLocked\n              discussions(first: $pageSize, after: $after, filter: ALL_NOTES, sort: $sort) {\n                pageInfo { hasNextPage endCursor }\n                nodes {\n                  id\n                  resolved\n                  resolvable\n                  notes {\n                    nodes {\n                      id\n                      body\n                      system\n                      internal\n                      createdAt\n                      lastEditedAt\n                      author { username }\n                    }\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    }",
+    "variables": {
+      "path": {
+        "from": "project_id",
+        "transform": "resolved_full_path"
+      },
+      "iid": {
+        "from": "iid",
+        "transform": "string"
+      },
+      "pageSize": {
+        "from": "page_size",
+        "default": 20
+      },
+      "after": {
+        "from": "after",
+        "default": null
+      },
+      "sort": {
+        "from": "sort",
+        "default": "CREATED_ASC"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "namespace",
+      "workItem"
+    ]
+  },
+  "create_work_item_note": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `work_item_gid` = resolveWorkItemGID(project_id, iid): first `resolved_full_path` as above, then an extra GraphQL round trip \"query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>, \"iid\": String(iid)}; a missing data.namespace.workItem.id throws `Work item #<iid> not found in namespace <path>`. The value used below is that gid://gitlab/WorkItem/<n>. transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. THE DOCUMENT IS ASSEMBLED AT RUNTIME — `query` below is what the bundle emits with only the required args. When `internal` is truthy it appends `$internal: Boolean` to the variable list and `internal: $internal` to the input, and sends the LITERAL value true (the arg itself is not forwarded). When `discussion_id` is supplied it appends `$discussionId: DiscussionID` and `discussionId: $discussionId`. Neither is ever sent as null. Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). If data.createNote.errors is non-empty -> throw `Failed to create note: <errors joined by \", \">`. Returns data.createNote.note as-is.",
+    "query": "mutation($noteableId: NoteableID!, $body: String!) {\n      createNote(input: { noteableId: $noteableId, body: $body }) {\n        note {\n          id\n          body\n          discussion { id }\n        }\n        errors\n      }\n    }",
+    "variables": {
+      "noteableId": {
+        "from": "iid",
+        "transform": "work_item_gid"
+      },
+      "body": {
+        "from": "body"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "createNote",
+      "note"
+    ]
+  },
+  "list_work_item_emoji_reactions": {
+    "category": "workitems",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `work_item_gid` = resolveWorkItemGID(project_id, iid): first `resolved_full_path` as above, then an extra GraphQL round trip \"query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>, \"iid\": String(iid)}; a missing data.namespace.workItem.id throws `Work item #<iid> not found in namespace <path>`. The value used below is that gid://gitlab/WorkItem/<n>. transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. Unlike the *_note_* emoji tools (which pass note_id straight through), these work-item tools DO use project_id and iid: the awardable id is the resolved work item GID. Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). A missing/null awardable or awardEmoji yields an empty array [] rather than an error.",
+    "query": "query($id: AwardableID!) {\n      awardable(id: $id) {\n        awardEmoji { nodes { name user { username } } }\n      }\n    }",
+    "variables": {
+      "id": {
+        "from": "iid",
+        "transform": "work_item_gid"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "awardable",
+      "awardEmoji",
+      "nodes"
+    ]
+  },
+  "list_work_item_note_emoji_reactions": {
+    "category": "workitems",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "Sent through executeGraphQL, which throws on a non-2xx response and on a non-empty top-level `errors` array before returning `json.data`. Missing/null awardable or awardEmoji yields an empty array `[]` rather than an error. NOTE: project_id and iid are declared required in the tool schema but the reference implementation ignores them for this tool — only note_id (and name) reach GraphQL; note_id must already be a note GID such as gid://gitlab/Note/123, it is passed through verbatim with no conversion.",
+    "query": "query($id: AwardableID!) {\n      awardable(id: $id) {\n        awardEmoji { nodes { name user { username } } }\n      }\n    }",
+    "variables": {
+      "id": {
+        "from": "note_id"
+      }
+    },
+    "result_path": [
+      "data",
+      "awardable",
+      "awardEmoji",
+      "nodes"
+    ]
+  },
+  "create_work_item_emoji_reaction": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `work_item_gid` = resolveWorkItemGID(project_id, iid): first `resolved_full_path` as above, then an extra GraphQL round trip \"query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>, \"iid\": String(iid)}; a missing data.namespace.workItem.id throws `Work item #<iid> not found in namespace <path>`. The value used below is that gid://gitlab/WorkItem/<n>. transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. Unlike the *_note_* emoji tools (which pass note_id straight through), these work-item tools DO use project_id and iid: the awardable id is the resolved work item GID. Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). If data.awardEmojiAdd.errors is non-empty -> throw `Failed to add emoji reaction: <errors joined by \", \">`. Otherwise return data.awardEmojiAdd.awardEmoji as-is.",
+    "query": "mutation($awardableId: AwardableID!, $name: String!) {\n      awardEmojiAdd(input: { awardableId: $awardableId, name: $name }) {\n        awardEmoji { name user { username } }\n        errors\n      }\n    }",
+    "variables": {
+      "awardableId": {
+        "from": "iid",
+        "transform": "work_item_gid"
+      },
+      "name": {
+        "from": "name"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "awardEmojiAdd",
+      "awardEmoji"
+    ]
+  },
+  "delete_work_item_emoji_reaction": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": true,
+    "kind": "graphql",
+    "notes": "transform `work_item_gid` = resolveWorkItemGID(project_id, iid): first `resolved_full_path` as above, then an extra GraphQL round trip \"query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>, \"iid\": String(iid)}; a missing data.namespace.workItem.id throws `Work item #<iid> not found in namespace <path>`. The value used below is that gid://gitlab/WorkItem/<n>. transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. Unlike the *_note_* emoji tools (which pass note_id straight through), these work-item tools DO use project_id and iid: the awardable id is the resolved work item GID. Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). If data.awardEmojiRemove.errors is non-empty -> throw `Failed to remove emoji reaction: <errors joined by \", \">`. If the unwrapped awardEmoji is null/undefined the tool returns the literal object {\"status\":\"success\",\"message\":\"Work item emoji reaction removed\"} instead.",
+    "query": "mutation($awardableId: AwardableID!, $name: String!) {\n      awardEmojiRemove(input: { awardableId: $awardableId, name: $name }) {\n        awardEmoji { name }\n        errors\n      }\n    }",
+    "variables": {
+      "awardableId": {
+        "from": "iid",
+        "transform": "work_item_gid"
+      },
+      "name": {
+        "from": "name"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "awardEmojiRemove",
+      "awardEmoji"
+    ]
+  },
+  "create_work_item_note_emoji_reaction": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "Sent through executeGraphQL (throws on HTTP error and on a non-empty top-level `errors`). Additionally: if data.awardEmojiAdd.errors is non-empty, throw `Failed to add emoji reaction: <errors joined by \", \">`. Otherwise return data.awardEmojiAdd.awardEmoji as-is. NOTE: project_id and iid are declared required in the tool schema but the reference implementation ignores them for this tool — only note_id (and name) reach GraphQL; note_id must already be a note GID such as gid://gitlab/Note/123, it is passed through verbatim with no conversion.",
+    "query": "mutation($awardableId: AwardableID!, $name: String!) {\n      awardEmojiAdd(input: { awardableId: $awardableId, name: $name }) {\n        awardEmoji { name user { username } }\n        errors\n      }\n    }",
+    "variables": {
+      "awardableId": {
+        "from": "note_id"
+      },
+      "name": {
+        "from": "name"
+      }
+    },
+    "result_path": [
+      "data",
+      "awardEmojiAdd",
+      "awardEmoji"
+    ]
+  },
+  "delete_work_item_note_emoji_reaction": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": true,
+    "kind": "graphql",
+    "notes": "Sent through executeGraphQL (throws on HTTP error and on a non-empty top-level `errors`). Additionally: if data.awardEmojiRemove.errors is non-empty, throw `Failed to remove emoji reaction: <errors joined by \", \">`. If the unwrapped awardEmoji is null/undefined the tool returns the literal object {\"status\":\"success\",\"message\":\"Work item note emoji reaction removed\"} instead. NOTE: project_id and iid are declared required in the tool schema but the reference implementation ignores them for this tool — only note_id (and name) reach GraphQL; note_id must already be a note GID such as gid://gitlab/Note/123, it is passed through verbatim with no conversion.",
+    "query": "mutation($awardableId: AwardableID!, $name: String!) {\n      awardEmojiRemove(input: { awardableId: $awardableId, name: $name }) {\n        awardEmoji { name }\n        errors\n      }\n    }",
+    "variables": {
+      "awardableId": {
+        "from": "note_id"
+      },
+      "name": {
+        "from": "name"
+      }
+    },
+    "result_path": [
+      "data",
+      "awardEmojiRemove",
+      "awardEmoji"
+    ]
+  },
+  "get_timeline_events": {
+    "category": "workitems",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `work_item_gid` = resolveWorkItemGID(project_id, incident_iid): first `resolved_full_path` as above, then an extra GraphQL round trip \"query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>, \"iid\": String(iid)}; a missing data.namespace.workItem.id throws `Work item #<iid> not found in namespace <path>`. The value used below is that gid://gitlab/WorkItem/<n>. transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. transform `issue_gid_from_work_item`: run work_item_gid on (project_id, incident_iid) and then replace the substring \"/WorkItem/\" with \"/Issue/\" — incidentManagementTimelineEvents expects gid://gitlab/Issue/<n>, not the WorkItem GID. $fullPath is the SAME resolved path returned by that resolution (no second REST call). Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). Note the root field here is `project` regardless of how the namespace resolved. Each node is remapped to {id, note, action, occurredAt, createdAt} plus noteHtml when present and tags (timelineEventTags node names) when non-empty; a missing connection yields [].",
+    "query": "query($fullPath: ID!, $incidentId: IssueID!) {\n      project(fullPath: $fullPath) {\n        incidentManagementTimelineEvents(incidentId: $incidentId) {\n          nodes {\n            id\n            note\n            noteHtml\n            action\n            occurredAt\n            createdAt\n            timelineEventTags {\n              nodes {\n                id\n                name\n              }\n            }\n          }\n        }\n      }\n    }",
+    "variables": {
+      "fullPath": {
+        "from": "project_id",
+        "transform": "resolved_full_path"
+      },
+      "incidentId": {
+        "from": "incident_iid",
+        "transform": "issue_gid_from_work_item"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "project",
+      "incidentManagementTimelineEvents",
+      "nodes"
+    ]
+  },
+  "create_timeline_event": {
+    "category": "workitems",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `work_item_gid` = resolveWorkItemGID(project_id, incident_iid): first `resolved_full_path` as above, then an extra GraphQL round trip \"query($path: ID!, $iid: String!) {\n      namespace(fullPath: $path) {\n        workItem(iid: $iid) {\n          id\n        }\n      }\n    }\" with {\"path\": <resolved_full_path>, \"iid\": String(iid)}; a missing data.namespace.workItem.id throws `Work item #<iid> not found in namespace <path>`. The value used below is that gid://gitlab/WorkItem/<n>. transform `resolved_full_path` = resolveProjectOrGroupPath(project_id): decodeURIComponent(project_id), then match ^(group|project):(.+)$ — an explicit `group:` prefix is refused outright while GITLAB_ALLOWED_PROJECT_IDS (or a session scope) is non-empty; the remainder is passed through getEffectiveProjectId (GITLAB_PROJECT_ID override). With an explicit `group:` prefix it does GET /groups/{urlencoded id} and takes `full_path` (kind=group). Otherwise GET /projects/{urlencoded id} and takes `path_with_namespace` (kind=project); only if that 404s AND there was no explicit prefix AND the allowlist is empty AND the id is not all digits does it retry GET /groups/{urlencoded id} and use `full_path` (kind=group). This REST call always happens — it is NOT skipped for path-like ids. transform `issue_gid_from_work_item`: run work_item_gid on (project_id, incident_iid) and then replace the substring \"/WorkItem/\" with \"/Issue/\" — incidentManagementTimelineEvents expects gid://gitlab/Issue/<n>, not the WorkItem GID. transform `timeline_event_create_input` builds the single GraphQL variable `input` as {incidentId: <issue gid>, note: <note>, occurredAt: <occurred_at>} plus timelineEventTagNames: <tag_names> only when tag_names is a non-empty array. Sent through executeGraphQL (POST to <origin><prefix>/api/graphql, or GITLAB_GRAPHQL_URL; throws on a non-2xx response and on a non-empty top-level `errors` array, then returns json.data). If data.timelineEventCreate.errors is non-empty -> throw `Failed to create timeline event: <errors joined by \", \">`. The event is remapped to {id, note, action, occurredAt, createdAt} plus noteHtml when present and tags (tag names) when non-empty.",
+    "query": "mutation CreateTimelineEvent($input: TimelineEventCreateInput!) {\n      timelineEventCreate(input: $input) {\n        timelineEvent {\n          id\n          note\n          noteHtml\n          action\n          occurredAt\n          createdAt\n          timelineEventTags {\n            nodes {\n              id\n              name\n            }\n          }\n        }\n        errors\n      }\n    }",
+    "variables": {
+      "input": {
+        "from": "incident_iid",
+        "transform": "timeline_event_create_input"
+      }
+    },
+    "pre_step": {
+      "when": "always",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "timelineEventCreate",
+      "timelineEvent"
+    ]
+  },
+  "list_webhooks": {
+    "category": "webhooks",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "project_id",
+          "present": true
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/hooks",
+        "path_params": [
+          "project_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "project_id",
+          "present": false
+        },
+        "method": "GET",
+        "path": "/groups/{group_id}/hooks",
+        "path_params": [
+          "group_id"
+        ]
+      }
+    ],
+    "notes": "project_id wins when both are supplied; group_id is required when project_id is absent. Query params: page, per_page."
+  },
+  "create_webhook": {
+    "category": "webhooks",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "project_id",
+          "present": true
+        },
+        "method": "POST",
+        "path": "/projects/{project_id}/hooks",
+        "path_params": [
+          "project_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "project_id",
+          "present": false
+        },
+        "method": "POST",
+        "path": "/groups/{group_id}/hooks",
+        "path_params": [
+          "group_id"
+        ]
+      }
+    ],
+    "notes": "project_id wins when both are supplied. JSON body is every defined argument except project_id, group_id and hook_id (i.e. url, name, description, token, signing_token, enable_ssl_verification, all *_events flags, push_events_branch_filter, branch_filter_strategy, custom_webhook_template, custom_headers)."
+  },
+  "update_webhook": {
+    "category": "webhooks",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "project_id",
+          "present": true
+        },
+        "method": "PUT",
+        "path": "/projects/{project_id}/hooks/{hook_id}",
+        "path_params": [
+          "project_id",
+          "hook_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "project_id",
+          "present": false
+        },
+        "method": "PUT",
+        "path": "/groups/{group_id}/hooks/{hook_id}",
+        "path_params": [
+          "group_id",
+          "hook_id"
+        ]
+      }
+    ],
+    "notes": "project_id wins when both are supplied. JSON body is every defined argument except project_id, group_id and hook_id. hook_id is interpolated raw (numeric)."
+  },
+  "delete_webhook": {
+    "category": "webhooks",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "project_id",
+          "present": true
+        },
+        "method": "DELETE",
+        "path": "/projects/{project_id}/hooks/{hook_id}",
+        "path_params": [
+          "project_id",
+          "hook_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "project_id",
+          "present": false
+        },
+        "method": "DELETE",
+        "path": "/groups/{group_id}/hooks/{hook_id}",
+        "path_params": [
+          "group_id",
+          "hook_id"
+        ]
+      }
+    ],
+    "notes": "project_id wins when both are supplied. Empty response body; reference returns {status: 'deleted', hook_id}."
+  },
+  "list_webhook_events": {
+    "category": "webhooks",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "path_variants": [
+      {
+        "when": {
+          "param": "project_id",
+          "present": true
+        },
+        "method": "GET",
+        "path": "/projects/{project_id}/hooks/{hook_id}/events",
+        "path_params": [
+          "project_id",
+          "hook_id"
+        ]
+      },
+      {
+        "when": {
+          "param": "project_id",
+          "present": false
+        },
+        "method": "GET",
+        "path": "/groups/{group_id}/hooks/{hook_id}/events",
+        "path_params": [
+          "group_id",
+          "hook_id"
+        ]
+      }
+    ],
+    "notes": "project_id wins when both are supplied. Query params always set: page (default 1), per_page (default 20; GitLab caps webhook events at 20). status is appended when provided. The 'summary' argument is client-side only: when true the reference condenses each event instead of returning the raw objects."
+  },
+  "get_webhook_event": {
+    "category": "webhooks",
+    "read_only": true,
+    "destructive": false,
+    "kind": "composite",
+    "notes": "No single endpoint for one event: the reference pages GET /projects/{project_id}/hooks/{hook_id}/events (or GET /groups/{group_id}/hooks/{hook_id}/events when project_id is absent) with per_page=20 and finds the entry whose id === event_id. If the 'page' argument is supplied it fetches only that one page and returns the match or null. Otherwise it walks pages 1..25 (up to 500 events), stopping early when a page returns fewer than 20 events or a match is found. Not found -> reference returns an error object stating the event was not found 'on page N' / 'in the 500 most recent events'."
+  },
+  "search_code": {
+    "category": "search",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/search",
+    "path_params": [],
+    "notes": "Instance-wide blob search. Query params: scope=blobs (always), search, plus optional page, per_page, filename, path, extension. Note the 'path' argument is a query param here, not a path segment."
+  },
+  "search_project_code": {
+    "category": "search",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/projects/{project_id}/search",
+    "path_params": [
+      "project_id"
+    ],
+    "notes": "Query params: scope=blobs (always), search, plus optional ref, page, per_page, filename, path, extension. The 'path' argument is a query param, not a path segment."
+  },
+  "search_group_code": {
+    "category": "search",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/groups/{group_id}/search",
+    "path_params": [
+      "group_id"
+    ],
+    "notes": "Query params: scope=blobs (always), search, plus optional page, per_page, filename, path, extension. The 'path' argument is a query param, not a path segment. group_id is encoded segment-wise (slashes preserved) in the reference, unlike project_id."
+  },
+  "list_project_variables": {
+    "category": "variables",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/variables",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "get_project_variable": {
+    "category": "variables",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/projects/{project_id}/variables/{key}",
+    "path_params": [
+      "project_id",
+      "key"
+    ]
+  },
+  "create_project_variable": {
+    "category": "variables",
+    "read_only": false,
+    "destructive": false,
+    "method": "POST",
+    "path": "/projects/{project_id}/variables",
+    "path_params": [
+      "project_id"
+    ]
+  },
+  "update_project_variable": {
+    "category": "variables",
+    "read_only": false,
+    "destructive": false,
+    "method": "PUT",
+    "path": "/projects/{project_id}/variables/{key}",
+    "path_params": [
+      "project_id",
+      "key"
+    ]
+  },
+  "delete_project_variable": {
+    "category": "variables",
+    "read_only": false,
+    "destructive": true,
+    "method": "DELETE",
+    "path": "/projects/{project_id}/variables/{key}",
+    "path_params": [
+      "project_id",
+      "key"
+    ]
+  },
+  "list_group_variables": {
+    "category": "variables",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/groups/{group_id}/variables",
+    "path_params": [
+      "group_id"
+    ],
+    "notes": "Guarded by rejectIfProjectScopedDeployment. group_id is decoded then URL-encoded as one segment. Query params: page, per_page; the object-valued `filter` arg is flattened to filter[<key>]=<value> (e.g. filter[environment_scope]=production)."
+  },
+  "get_group_variable": {
+    "category": "variables",
+    "read_only": true,
+    "destructive": false,
+    "kind": "rest",
+    "method": "GET",
+    "path": "/groups/{group_id}/variables/{key}",
+    "path_params": [
+      "group_id",
+      "key"
+    ],
+    "notes": "Guarded by rejectIfProjectScopedDeployment. filter.environment_scope is sent as query param filter[environment_scope]."
+  },
+  "create_group_variable": {
+    "category": "variables",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "POST",
+    "path": "/groups/{group_id}/variables",
+    "path_params": [
+      "group_id"
+    ],
+    "notes": "Guarded by rejectIfProjectScopedDeployment. JSON body = all args except group_id: key, value, variable_type, protected, masked, raw, environment_scope, description."
+  },
+  "update_group_variable": {
+    "category": "variables",
+    "read_only": false,
+    "destructive": false,
+    "kind": "rest",
+    "method": "PUT",
+    "path": "/groups/{group_id}/variables/{key}",
+    "path_params": [
+      "group_id",
+      "key"
+    ],
+    "notes": "Guarded by rejectIfProjectScopedDeployment. JSON body = args except group_id, key and filter (value, variable_type, protected, masked, raw, environment_scope, description). filter.environment_scope goes into the query string as filter[environment_scope].",
+    "query_params": [
+      "filter"
+    ]
+  },
+  "delete_group_variable": {
+    "category": "variables",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "DELETE",
+    "path": "/groups/{group_id}/variables/{key}",
+    "path_params": [
+      "group_id",
+      "key"
+    ],
+    "notes": "Guarded by rejectIfProjectScopedDeployment. filter.environment_scope is sent as query param filter[environment_scope]. Response body ignored; tool returns a synthetic success message."
+  },
+  "get_dependency_proxy_settings": {
+    "category": "dependency_proxy",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "group_id is resolved to a group full path first: decodeURIComponent(group_id); if the decoded value is all digits, GET /groups/{decoded} and take `full_path`; otherwise the decoded value is used as-is (transform `resolved_full_path`). Guarded by rejectIfProjectScopedDeployment — the tool is refused outright when the server runs in project-scoped deployment mode. Sent through executeGraphQL (throws on HTTP error and on a non-empty top-level `errors`). If data.group is null -> throw `Group not found: <fullPath>`. The unwrapped group object is then remapped before being returned: {enabled: group.dependencyProxySetting?.enabled ?? false, blob_count: group.dependencyProxyBlobCount, total_size: group.dependencyProxyTotalSize, image_prefix: group.dependencyProxyImagePrefix, ttl_policy: group.dependencyProxyImageTtlPolicy} (ttl_policy keeps its GraphQL shape {enabled, ttl}).",
+    "query": "query($fullPath: ID!) {\n      group(fullPath: $fullPath) {\n        dependencyProxySetting { enabled }\n        dependencyProxyBlobCount\n        dependencyProxyTotalSize\n        dependencyProxyImagePrefix\n        dependencyProxyImageTtlPolicy { enabled ttl }\n      }\n    }",
+    "variables": {
+      "fullPath": {
+        "from": "group_id",
+        "transform": "resolved_full_path"
+      }
+    },
+    "pre_step": {
+      "when": "numeric",
+      "arg": "group_id",
+      "method": "GET",
+      "path": "/groups/{group_id}",
+      "field": "full_path",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "group"
+    ]
+  },
+  "update_dependency_proxy_settings": {
+    "category": "dependency_proxy",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "Pre-validation: if none of enabled / identity / secret is supplied -> throw `At least one of enabled, identity, or secret must be provided` without contacting GitLab. group_id is resolved to a group full path first: decodeURIComponent(group_id); if the decoded value is all digits, GET /groups/{decoded} and take `full_path`; otherwise the decoded value is used as-is (transform `resolved_full_path`). Guarded by rejectIfProjectScopedDeployment — the tool is refused outright when the server runs in project-scoped deployment mode. transform `dependency_proxy_settings_input` builds the single GraphQL variable `input` as an object: {groupPath: <resolved_full_path>} plus, only for the args that were actually supplied (undefined keys are omitted, not sent as null), enabled <- enabled (boolean), identity <- identity (string), secret <- secret (string). Sent through executeGraphQL. If data.updateDependencyProxySettings.errors is non-empty -> throw `Failed to update dependency proxy settings: <errors joined by \", \">`. The mutation's own payload is discarded: on success the executor must re-run the get_dependency_proxy_settings query with the SAME already-resolved fullPath (no second REST resolution) and return that remapped settings object — i.e. {enabled, blob_count, total_size, image_prefix, ttl_policy}.",
+    "query": "mutation($input: UpdateDependencyProxySettingsInput!) {\n      updateDependencyProxySettings(input: $input) { errors }\n    }",
+    "variables": {
+      "input": {
+        "from": "group_id",
+        "transform": "dependency_proxy_settings_input"
+      }
+    },
+    "pre_step": {
+      "when": "numeric",
+      "arg": "group_id",
+      "method": "GET",
+      "path": "/groups/{group_id}",
+      "field": "full_path",
+      "into": "resolved_full_path"
+    }
+  },
+  "list_dependency_proxy_blobs": {
+    "category": "dependency_proxy",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "group_id is resolved to a group full path first: decodeURIComponent(group_id); if the decoded value is all digits, GET /groups/{decoded} and take `full_path`; otherwise the decoded value is used as-is (transform `resolved_full_path`). Guarded by rejectIfProjectScopedDeployment — the tool is refused outright when the server runs in project-scoped deployment mode. Sent through executeGraphQL. If data.group?.dependencyProxyBlobs is missing -> throw `Group not found or dependency proxy not enabled: <fullPath>`. The unwrapped connection is remapped before returning: {blobs: nodes.map(n => ({file_name: n.fileName, size: n.size, created_at: n.createdAt})), pageInfo: connection.pageInfo}.",
+    "query": "query($fullPath: ID!, $first: Int, $after: String) {\n      group(fullPath: $fullPath) {\n        dependencyProxyBlobs(first: $first, after: $after) {\n          nodes { fileName size createdAt }\n          pageInfo { hasNextPage endCursor }\n        }\n      }\n    }",
+    "variables": {
+      "fullPath": {
+        "from": "group_id",
+        "transform": "resolved_full_path"
+      },
+      "first": {
+        "from": "first",
+        "default": 20
+      },
+      "after": {
+        "from": "after"
+      }
+    },
+    "pre_step": {
+      "when": "numeric",
+      "arg": "group_id",
+      "method": "GET",
+      "path": "/groups/{group_id}",
+      "field": "full_path",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "group",
+      "dependencyProxyBlobs"
+    ]
+  },
+  "purge_dependency_proxy_cache": {
+    "category": "dependency_proxy",
+    "read_only": false,
+    "destructive": true,
+    "kind": "rest",
+    "method": "DELETE",
+    "path": "/groups/{group_id}/dependency_proxy/cache",
+    "path_params": [
+      "group_id"
+    ],
+    "notes": "Guarded by rejectIfProjectScopedDeployment. group_id decoded then URL-encoded as one segment; no query or body. Response body ignored; tool returns a synthetic 'purge scheduled' message."
+  },
+  "list_project_vulnerabilities": {
+    "category": "vulnerabilities",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "The REST vulnerabilities API is deprecated (it silently ignores filters), so this is GraphQL-only. transform `resolved_full_path`: project_id is decoded, run through getEffectiveProjectId (the GITLAB_PROJECT_ID env override can replace it) and decoded again; if the result is all digits, GET /projects/{urlencoded id} and take `path_with_namespace` (throw `Could not resolve full path for project <id>` when absent); otherwise the decoded path is used as-is. transform `min_100`: Math.min(first ?? 20, 100). transform `upper_single_array`: the lowercase enum arg becomes a one-element array of its uppercased form, e.g. state \"secret_detection\" -> [\"SECRET_DETECTION\"]. IMPORTANT: state, severity, reportType and after are only added to the variables object when the corresponding arg is present — absent filters are omitted entirely rather than sent as null (fullPath and first are always sent). Sent through executeGraphQL (throws on HTTP error and on a non-empty top-level `errors`). If data.project is null -> throw `Project not found or not accessible: <fullPath>`. The tool returns {vulnerabilities: <unwrapped>.nodes, pageInfo: <unwrapped>.pageInfo}.",
+    "query": "query listProjectVulnerabilities(\n      $fullPath: ID!\n      $state: [VulnerabilityState!]\n      $severity: [VulnerabilitySeverity!]\n      $reportType: [VulnerabilityReportType!]\n      $first: Int\n      $after: String\n    ) {\n      project(fullPath: $fullPath) {\n        vulnerabilities(\n          state: $state\n          severity: $severity\n          reportType: $reportType\n          first: $first\n          after: $after\n        ) {\n          nodes {\n            \n  id\n  title\n  description\n  state\n  severity\n  reportType\n  detectedAt\n  confirmedAt\n  resolvedAt\n  dismissedAt\n  dismissalReason\n  webUrl\n  scanner {\n    name\n    externalId\n    vendor\n  }\n  identifiers {\n    externalType\n    externalId\n    name\n    url\n  }\n  links {\n    name\n    url\n  }\n  location {\n    ... on VulnerabilityLocationSast {\n      file\n      startLine\n      endLine\n    }\n    ... on VulnerabilityLocationSecretDetection {\n      file\n      startLine\n      endLine\n    }\n    ... on VulnerabilityLocationDependencyScanning {\n      file\n      dependency {\n        package {\n          name\n        }\n        version\n      }\n    }\n    ... on VulnerabilityLocationContainerScanning {\n      image\n      operatingSystem\n      dependency {\n        package {\n          name\n        }\n        version\n      }\n    }\n    ... on VulnerabilityLocationDast {\n      path\n      hostname\n    }\n  }\n\n          }\n          pageInfo {\n            endCursor\n            hasNextPage\n          }\n        }\n      }\n    }",
+    "variables": {
+      "fullPath": {
+        "from": "project_id",
+        "transform": "resolved_full_path"
+      },
+      "first": {
+        "from": "first",
+        "default": 20,
+        "transform": "min_100"
+      },
+      "state": {
+        "from": "state",
+        "transform": "upper_single_array"
+      },
+      "severity": {
+        "from": "severity",
+        "transform": "upper_single_array"
+      },
+      "reportType": {
+        "from": "report_type",
+        "transform": "upper_single_array"
+      },
+      "after": {
+        "from": "after"
+      }
+    },
+    "pre_step": {
+      "when": "numeric",
+      "arg": "project_id",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "field": "path_with_namespace",
+      "into": "resolved_full_path"
+    },
+    "result_path": [
+      "data",
+      "project",
+      "vulnerabilities"
+    ]
+  },
+  "get_vulnerability": {
+    "category": "vulnerabilities",
+    "read_only": true,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "transform `vulnerability_gid` (toVulnerabilityGid): an all-digits id becomes `gid://gitlab/Vulnerability/<n>`; a value already matching ^gid://gitlab/Vulnerability/\\d+$ is passed through unchanged; anything else -> throw `Invalid vulnerability ID \"<id>\": expected a numeric ID or a gid://gitlab/Vulnerability/<id> global ID`. Sent through executeGraphQL (throws on HTTP error and on a non-empty top-level `errors`). If data.vulnerability is null -> throw `Vulnerability not found: <vulnerability_id>`. Post-check: because vulnerability GIDs are global rather than project-scoped, the returned `project` block is validated against GITLAB_ALLOWED_PROJECT_IDS (no-op when that allowlist is empty) — allowed if the allowlist contains project.fullPath or the numeric id parsed out of project.id (^gid://gitlab/Project/(\\d+)$), otherwise throw `Access denied: Vulnerability <id> belongs to project <fullPath|numericId|unknown>, which is not in the allowed project list: <ids joined by \", \">`. The whole vulnerability object (including the extra project { id name fullPath } selection) is returned.",
+    "query": "query getVulnerability($id: VulnerabilityID!) {\n      vulnerability(id: $id) {\n        \n  id\n  title\n  description\n  state\n  severity\n  reportType\n  detectedAt\n  confirmedAt\n  resolvedAt\n  dismissedAt\n  dismissalReason\n  webUrl\n  scanner {\n    name\n    externalId\n    vendor\n  }\n  identifiers {\n    externalType\n    externalId\n    name\n    url\n  }\n  links {\n    name\n    url\n  }\n  location {\n    ... on VulnerabilityLocationSast {\n      file\n      startLine\n      endLine\n    }\n    ... on VulnerabilityLocationSecretDetection {\n      file\n      startLine\n      endLine\n    }\n    ... on VulnerabilityLocationDependencyScanning {\n      file\n      dependency {\n        package {\n          name\n        }\n        version\n      }\n    }\n    ... on VulnerabilityLocationContainerScanning {\n      image\n      operatingSystem\n      dependency {\n        package {\n          name\n        }\n        version\n      }\n    }\n    ... on VulnerabilityLocationDast {\n      path\n      hostname\n    }\n  }\n\n        project {\n          id\n          name\n          fullPath\n        }\n      }\n    }",
+    "variables": {
+      "id": {
+        "from": "vulnerability_id",
+        "transform": "vulnerability_gid"
+      }
+    },
+    "result_path": [
+      "data",
+      "vulnerability"
+    ]
+  },
+  "dismiss_vulnerability": {
+    "category": "vulnerabilities",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "Pre-flight allowlist guard (GraphQL, not REST — skipped entirely when GITLAB_ALLOWED_PROJECT_IDS is empty): first run \"query getVulnerabilityProject($id: VulnerabilityID!) {\\n      vulnerability(id: $id) {\\n        project {\\n          id\\n          fullPath\\n        }\\n      }\\n    }\" with {\"id\": <vulnerability_gid>}; a null data.vulnerability -> throw `Vulnerability not found: <vulnerability_id>`, and the returned project is checked exactly as in get_vulnerability (fullPath or the numeric id from gid://gitlab/Project/<n> must be in the allowlist) before any write is issued. transform `vulnerability_dismiss_input` builds the single GraphQL variable `input`: {id: toVulnerabilityGid(vulnerability_id), dismissalReason: reason.toUpperCase()} plus comment: <comment> only when a non-empty comment was supplied (falsy comments are omitted, not sent as null). toVulnerabilityGid: numeric -> `gid://gitlab/Vulnerability/<n>`, an existing gid://gitlab/Vulnerability/<n> passes through, anything else throws. reason is the lowercase tool enum uppercased, e.g. false_positive -> FALSE_POSITIVE. Sent through executeGraphQL. If data.vulnerabilityDismiss.errors is non-empty -> throw `Failed to dismiss vulnerability: <errors joined by \", \">`; if the unwrapped vulnerability is null -> throw `Vulnerability not returned after dismissal (id: <vulnerability_id>)`.",
+    "query": "mutation dismissVulnerability($input: VulnerabilityDismissInput!) {\n      vulnerabilityDismiss(input: $input) {\n        vulnerability {\n          id\n          state\n          dismissedAt\n          dismissalReason\n        }\n        errors\n      }\n    }",
+    "variables": {
+      "input": {
+        "from": "vulnerability_id",
+        "transform": "vulnerability_dismiss_input"
+      }
+    },
+    "result_path": [
+      "data",
+      "vulnerabilityDismiss",
+      "vulnerability"
+    ]
+  },
+  "confirm_vulnerability": {
+    "category": "vulnerabilities",
+    "read_only": false,
+    "destructive": false,
+    "kind": "graphql",
+    "notes": "Pre-flight allowlist guard (GraphQL, not REST — skipped entirely when GITLAB_ALLOWED_PROJECT_IDS is empty): first run \"query getVulnerabilityProject($id: VulnerabilityID!) {\\n      vulnerability(id: $id) {\\n        project {\\n          id\\n          fullPath\\n        }\\n      }\\n    }\" with {\"id\": <vulnerability_gid>}; a null data.vulnerability -> throw `Vulnerability not found: <vulnerability_id>`, and the returned project is checked exactly as in get_vulnerability (fullPath or the numeric id from gid://gitlab/Project/<n> must be in the allowlist) before any write is issued. transform `vulnerability_confirm_input` builds the single GraphQL variable `input`: {id: toVulnerabilityGid(vulnerability_id)} plus comment: <comment> only when a non-empty comment was supplied (omitted otherwise). toVulnerabilityGid: numeric -> `gid://gitlab/Vulnerability/<n>`, an existing gid://gitlab/Vulnerability/<n> passes through, anything else throws. Sent through executeGraphQL. If data.vulnerabilityConfirm.errors is non-empty -> throw `Failed to confirm vulnerability: <errors joined by \", \">`; if the unwrapped vulnerability is null -> throw `Vulnerability not returned after confirmation (id: <vulnerability_id>)`.",
+    "query": "mutation confirmVulnerability($input: VulnerabilityConfirmInput!) {\n      vulnerabilityConfirm(input: $input) {\n        vulnerability {\n          id\n          state\n          confirmedAt\n        }\n        errors\n      }\n    }",
+    "variables": {
+      "input": {
+        "from": "vulnerability_id",
+        "transform": "vulnerability_confirm_input"
+      }
+    },
+    "result_path": [
+      "data",
+      "vulnerabilityConfirm",
+      "vulnerability"
+    ]
+  },
+  "orbit_query": {
+    "category": "orbit",
+    "read_only": true,
+    "destructive": false,
+    "method": "POST",
+    "path": "/orbit/query",
+    "path_params": []
+  },
+  "orbit_get_schema": {
+    "category": "orbit",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/orbit/schema",
+    "path_params": []
+  },
+  "orbit_get_status": {
+    "category": "orbit",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/orbit/status",
+    "path_params": []
+  },
+  "orbit_list_tools": {
+    "category": "orbit",
+    "read_only": true,
+    "destructive": false,
+    "method": "GET",
+    "path": "/orbit/tools",
+    "path_params": []
+  },
+  "discover_tools": {
+    "category": "core",
+    "read_only": true,
+    "destructive": false,
+    "kind": "local",
+    "notes": "Meta-tool handled before the GitLab dispatch switch; makes no HTTP call. With no 'category' argument it returns the list of toolset definitions as {categories: [{id, toolCount, active, isDefault}], hint}. With a category it validates the name against the known toolset ids (error result listing valid ids if unknown) and otherwise activates that toolset, mutating the exposed tool list and emitting a tools/list_changed notification."
+  }
+}
